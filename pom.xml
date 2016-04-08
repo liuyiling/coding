@@ -21,6 +21,7 @@
         <module>coding-effectivejava</module>
         <module>coding-common</module>
         <module>coding-tricky</module>
+        <module>coding-designpatter</module>
     </modules>
 
 
