@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+
+<beans>
+
+    <import resource="spring-jdbc.xml"></import>
+
+    <!-- 使用id定义一个bean,用ApplicationContext获取-->
+    <bean id="iocBean" class="com.liuyiling.spring.ioc.IocBeanImpl">
+        <!-- 这种方式IocBeanImpl中必须有空的构造器-->
+    </bean>
+
+    <bean id="noUse" class="com.liuyiling.spring.ioc.NoUse">
+        <property name="name" value="liuyiling"></property>
+        <property name="id" value="2"></property>
+    </bean>
+
+    <bean id="son" class="com.liuyiling.spring.ioc.Son">
+    </bean>
+
+
+    <bean id="iocBean2" class="com.liuyiling.spring.ioc.IocBeanImpl">
+        <!-- 通过构造器的属性的顺序注入-->
+        <!--<constructor-arg index="0" value="610"></constructor-arg>-->
+        <!-- 通过set方法注入了-->
+        <property name="id" value="610"></property>
+        <property name="list">
+            <list>
+                <value>1</value>
+                <value>2</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- 延迟初始化，只有在真正使用的时候才创建bean，或者被初始化被依赖注入的bean时初始化-->
+    <!-- 在iocBean3初始化之前,要先初始化iocBean。   在iocBean销毁之前要先销毁iocBean3-->
+    <bean id="iocBean3" class="com.liuyiling.spring.ioc.IocBeanDecorator" lazy-init="true" depends-on="iocBean">
+        <property name="iocBean" ref="iocBean2"></property>
+        <!--<property name="iocBean"><null/></property>-->
+    </bean>
+
+    <!-- 定义拦截器对象 -->
+    <bean id="methodBeforeAdviceImpl" class="com.liuyiling.spring.aop.MethodBeforeAdviceImpl"></bean>
+
+    <bean id="theAdvisor" class="org.springframework.aop.support.NameMatchMethodPointcutAdvisor">
+        <property name="advice">
+            <!-- 拦截器对象，方法前置对象拦截器-->
+            <ref local="methodBeforeAdviceImpl"></ref>
+        </property>
+        <!-- 拦截所有方法-->
+        <property name="mappedName" value="*"></property>
+    </bean>
+
+    <bean id="iocBeanImpl" class="com.liuyiling.spring.ioc.IocBeanImpl"></bean>
+
+    <bean id="iocBeanAop" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="interceptorNames" value="theAdvisor"></property>
+        <property name="target">
+            <ref local="iocBeanImpl"></ref>
+        </property>
+    </bean>
+
+
+    <!--指定初始化方法，在构造器注入和setter注入之后调用该方法-->
+    <!-- 只有作用域为singleton的bean才能被销毁-->
+    <bean id="resourceBean" class="com.liuyiling.spring.dependson.ResourceBean" init-method="init"
+          destroy-method="destory">
+        <property name="file" value="/Users/a/a.txt"></property>
+    </bean>
+
+    <bean id="dependentBean" class="com.liuyiling.spring.dependson.DependentBean" init-method="init"
+          destroy-method="destory" depends-on="resourceBean">
+        <property name="resourceBean" ref="resourceBean"></property>
+    </bean>
+
+    <bean id="a" class="com.liuyiling.spring.A">
+        <!--<property name="b" ref="b"></property>-->
+    </bean>
+
+    <bean id="b" class="com.liuyiling.spring.B" lazy-init="true">
+    </bean>
+
+</beans>

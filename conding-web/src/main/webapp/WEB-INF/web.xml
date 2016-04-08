@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+
+
+    <!-- 注入资源配置,在Servlet中可以使用@Resource注入 -->
+    <env-entry>
+        <env-entry-name>injectPrama</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>injectPrama</env-entry-value>
+    </env-entry>
+
+    <!-- Listener 声明在 Servlet前面-->
+    <listener>
+        <listener-class>MyListener</listener-class>
+    </listener>
+
+
+
+    <!-- 第一个servlet，用来上手和熟悉servlet的运行流程 -->
+    <servlet>
+        <servlet-name>FirstServlet</servlet-name>
+        <servlet-class>FirstServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>FirstServlet</servlet-name>
+        <url-pattern>/servlet/FirstServlet</url-pattern>
+    </servlet-mapping>
+
+
+    <!-- 全局参数配置,使用  getConfig().getContext().getInitParam(key)  获取 -->
+    <context-param>
+        <param-name>overallinitParam</param-name>
+        <param-value>overallinitParam</param-value>
+    </context-param>
+
+    <!-- sevlet获取参数的配置，还需要配合servlet.java 和 servlet-mapping-->
+    <servlet>
+        <servlet-name>ParamServlet</servlet-name>
+        <servlet-class>ParamServlet</servlet-class>
+        <!-- 初始化参数，非全局,全局资源见上-->
+        <init-param>
+            <param-name>initParamOne</param-name>
+            <param-value>initParamOne</param-value>
+        </init-param>
+        <!-- 1表示tomcat启动的时候就加载，0为lazy-load-->
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ParamServlet</servlet-name>
+        <url-pattern>/servlet/ParamServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>RequestDispatcherServlet</servlet-name>
+        <servlet-class>RequestDispatcherServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>RequestDispatcherServlet</servlet-name>
+        <url-pattern>/servlet/RequestDispatcherServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>LifeCycleServlet</servlet-name>
+        <servlet-class>LifeCycleServlet</servlet-class>
+        <init-param>
+            <param-name>startPointer</param-name>
+            <param-value>1600</param-value>
+        </init-param>
+        <!--当值为0或者大于0时，表示容器在应用启动时就加载这个servlet；-->
+        <!--当是一个负数时或者没有指定时，则指示容器在该servlet被选择时才加载。-->
+        <!--<load-on-startup>1</load-on-startup>-->
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>LifeCycleServlet</servlet-name>
+        <url-pattern>/servlet/LifeCycleServlet</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>ForwardServlet</servlet-name>
+        <servlet-class>ForwardServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ForwardServlet</servlet-name>
+        <url-pattern>/servlet/ForwardServlet</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>RedirectServlet</servlet-name>
+        <servlet-class>RedirectServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>RedirectServlet</servlet-name>
+        <url-pattern>/servlet/RedirectServlet</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>DownloadServlet</servlet-name>
+        <servlet-class>DownloadServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>DownloadServlet</servlet-name>
+        <url-pattern>/servlet/DownloadServlet</url-pattern>
+    </servlet-mapping>
+
+
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+
+
+    <!-- 注意，一个web.xml中可以配置很多歌filter的，执行顺序和配置文件中的顺序相同
+         多个filter之间可能会相互影响,请求经过filter的顺序
+    -->
+
+    <!-- filter的配置-->
+    <filter>
+        <filter-name>filterName</filter-name>
+        <filter-class>MyFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>filterName</filter-name>
+        <url-pattern>/servlet/*</url-pattern>
+        <!-- 当直接请求Servlet的某一个时候生效-->
+        <dispatcher>REQUEST</dispatcher>
+        <!-- 仅当通过Servlet FORWARD 到某一个Servlet的时候才生效-->
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>charaterEncodingFilter</filter-name>
+        <filter-class>CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>characterEncoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>enabled</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>charaterEncodingFilter</filter-name>
+        <url-pattern>/servlet/*</url-pattern>
+    </filter-mapping>
+
+
+    <filter>
+        <filter-name>logFilter</filter-name>
+        <filter-class>LogFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>logFilter</filter-name>
+        <url-pattern>/servlet/*</url-pattern>
+    </filter-mapping>
+
+
+</web-app>

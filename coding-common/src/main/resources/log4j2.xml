@@ -1,0 +1,73 @@
+<Configuration status="WARN">
+    <!-- Appenders用来规定日志记录的位置 -->
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%p] %m%n"/>
+        </Console>
+        <RollingFile name="errorFile" fileName="${sys:catalina.base}/logs/error.log"
+                     filePattern="${sys:catalina.base}/logs/error.log.%d{yyyyMMdd-HH}">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%p] %m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true"/>
+            </Policies>
+        </RollingFile>
+        <RollingFile name="warnFile" fileName="${sys:catalina.base}/logs/warn.log"
+                     filePattern="${sys:catalina.base}/logs/warn.log.%d{yyyyMMdd-HH}">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%p] %m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true"/>
+            </Policies>
+        </RollingFile>
+        <RollingFile name="infoFile" fileName="${sys:catalina.base}/logs/info.log"
+                     filePattern="${sys:catalina.base}/logs/info.log.%d{yyyyMMdd-HH}">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%p] %m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true"/>
+            </Policies>
+        </RollingFile>
+        <RollingFile name="apiFile" fileName="${sys:catalina.base}/logs/api.log"
+                     filePattern="${sys:catalina.base}/logs/api.log.%d{yyyyMMdd-HH}">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%p] %m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true"/>
+            </Policies>
+        </RollingFile>
+        <RollingFile name="postFile" fileName="${sys:catalina.base}/logs/post.log"
+                     filePattern="${sys:catalina.base}/logs/post.log.%d{yyyyMMdd-HH}">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true"/>
+            </Policies>
+        </RollingFile>
+        <RollingFile name="syncDtlFile" fileName="${sys:catalina.base}/logs/sync_dtl.log"
+                     filePattern="${sys:catalina.base}/logs/sync_dtl.log.%d{yyyyMMdd-HH}">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true"/>
+            </Policies>
+        </RollingFile>
+    </Appenders>
+    <!-- Loggers指定了日志需要打印的位置（也就是上面的Appenders）-->
+    <!-- 使用LogManager.getLogger(name) 来获取记录者-->
+    <Loggers>
+        <Root level="debug" additivity="false">
+            <AppenderRef ref="Console" />
+        </Root>
+
+        <Logger name="error" level="error" additivity="false">
+            <AppenderRef ref="errorFile"/>
+        </Logger>
+        <Logger name="warn" level="warn" additivity="false">
+            <AppenderRef ref="warnFile"/>
+        </Logger>
+        <Logger name="info" level="info" additivity="false">
+            <AppenderRef ref="infoFile"/>
+        </Logger>
+        <Logger name="api" level="trace" additivity="false">
+            <AppenderRef ref="apiFile"/>
+        </Logger>
+        <Logger name="post" level="debug" additivity="false">
+            <AppenderRef ref="postFile"/>
+        </Logger>
+    </Loggers>
+</Configuration>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+
+<beans>
+
+    <!-- 使用id定义一个bean,用ApplicationContext获取-->
+    <bean id="user" class="com.liuyiling.jersey.resources.User">
+    </bean>
+
+</beans>
