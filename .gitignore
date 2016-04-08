@@ -19,6 +19,7 @@ target/
 *.ipr
 *.iml
 *.iws
+**/.gitignore
 
 # temp ignore
 *.log
@@ -33,3 +34,4 @@ target/
 Thumbs.db
 target/
 /bin/
+target/*
