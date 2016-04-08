@@ -1,0 +1,36 @@
+# maven ignore
+target/
+*.war
+*.zip
+*.tar
+*
+*.tar.gz
+
+# eclipse ignore
+.settings/
+.project
+.classpath
+#eclipse tomcat plugin ignore
+.tomcatplugin
+.#webclasspath
+.pydevproject
+
+# idea ignore
+.idea/
+*.ipr
+*.iml
+*.iws
+**/.gitignore
+
+# temp ignore
+*.log
+*.cache
+*.diff
+*.patch
+*.tmp
+.svn/
+
+# system ignore
+.DS_Store
+Thumbs.db
+target/*
