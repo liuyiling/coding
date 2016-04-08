@@ -32,5 +32,4 @@ target/
 .DS_Store
 Thumbs.db
 target/
-newsfeed-web/work/*
 /bin/
