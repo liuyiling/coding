@@ -23,7 +23,7 @@ public class UserCacheDBService {
 
         if (string == null) {//check
             synchronized (mutex) {//lock
-                if (!map.containsKey(userId)) { //check
+                if ( !map.containsKey(userId) ) { //check
                     string = getFromDb();
                     map.put(userId,string);
                 }

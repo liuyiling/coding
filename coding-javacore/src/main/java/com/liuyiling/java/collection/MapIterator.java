@@ -5,6 +5,7 @@ import java.util.Map;
 
 /**
  * Created by liuyl on 15/12/3.
+ * map循环遍历的方式
  */
 public class MapIterator {
 
@@ -16,7 +17,6 @@ public class MapIterator {
         map.put(2,"b");
 
         for(Map.Entry<Integer,String> entry : map.entrySet()){
-
             System.out.println("key= " + entry.getKey() + "  value = "  + entry.getValue());
         }
     }
