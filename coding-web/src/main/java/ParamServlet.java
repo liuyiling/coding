@@ -15,10 +15,8 @@ import java.io.PrintWriter;
 
 public class ParamServlet extends HttpServlet {
 
-    //注入参数
-    private
-    @Resource(name = "injectPrama")
-    String injectPrama;
+    //注入参数,需要在web.xml中配置entry-map
+    private @Resource(name = "injectPrama") String injectPrama;
 
 
     /**

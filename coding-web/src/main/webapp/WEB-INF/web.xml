@@ -5,7 +5,8 @@
          version="3.1">
 
 
-    <!-- 注入资源配置,在Servlet中可以使用@Resource注入 -->
+    <!-- 注入资源的配置,在Servlet中可以使用@Resource注入 -->
+    <!-- 注意和普通的servlet参数或者全局参数进行区别-->
     <env-entry>
         <env-entry-name>injectPrama</env-entry-name>
         <env-entry-type>java.lang.String</env-entry-type>

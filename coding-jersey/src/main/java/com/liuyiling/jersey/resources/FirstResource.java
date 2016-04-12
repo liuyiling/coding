@@ -9,7 +9,7 @@ import javax.ws.rs.core.MediaType;
 
 /**
  * Created by liuyl on 15/12/9.
- * 第一个Jersey框架
+ * Jersey框架学习的第一课
  */
 
 @Component

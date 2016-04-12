@@ -12,12 +12,12 @@
 
 
     <modules>
-        <module>conding-web</module>
+        <module>coding-web</module>
         <module>coding-javacore</module>
         <module>coding-mokito</module>
         <module>coding-guava</module>
         <module>coding-spring</module>
-        <module>conding-jersey</module>
+        <module>coding-jersey</module>
         <module>coding-effectivejava</module>
         <module>coding-common</module>
         <module>coding-tricky</module>
