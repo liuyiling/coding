@@ -11,15 +11,13 @@ import java.io.IOException;
  */
 public class LogFilter implements Filter {
 
-    //记录日志的实际处理类
-    private Log log = LogFactory.getLog(this.getClass());
     //filter的名称
     private String filterName;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         filterName = filterConfig.getFilterName();
-        log.info("启动 LogFilter");
+        System.out.println("LogFilter 初始化");
     }
 
     @Override
@@ -30,21 +28,21 @@ public class LogFilter implements Filter {
         req.setCharacterEncoding("UTF-8");
         res.setCharacterEncoding("UTF-8");
 
-        log.info("LogFilter 开始处理");
+        System.out.println("LogFilter 执行");
         long startTime = System.currentTimeMillis();
         String requestUri = req.getRequestURI();
 
         filterChain.doFilter(req,res);
 
         long endTime = System.currentTimeMillis();
-        log.info(servletRequest.getRemoteAddr() + "访问了： " + requestUri + " 用时：" + (endTime-startTime) );
+        System.out.println(servletRequest.getRemoteAddr() + "访问了： " + requestUri + " 用时：" + (endTime - startTime));
 
 
-        log.info("LogFilter 处理完毕");
+        System.out.println("LogFilter 结束");
     }
 
     @Override
     public void destroy() {
-        log.info("LogFilter 关闭");
+        System.out.println("LogFilter 销毁");
     }
 }

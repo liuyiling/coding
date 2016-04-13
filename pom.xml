@@ -22,6 +22,7 @@
         <module>coding-common</module>
         <module>coding-tricky</module>
         <module>coding-designpatter</module>
+        <module>coding-flume</module>
     </modules>
 
 

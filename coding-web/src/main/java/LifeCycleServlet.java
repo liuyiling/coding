@@ -22,7 +22,7 @@ public class LifeCycleServlet extends HttpServlet {
      */
     @Override
     public void init() throws ServletException {
-        System.out.println("execute init() method");
+        System.out.println("servlet init()");
         ServletConfig servletConfig = getServletConfig();
         startPoint = Double.parseDouble(servletConfig.getInitParameter("startPointer"));
     }
@@ -36,13 +36,13 @@ public class LifeCycleServlet extends HttpServlet {
      */
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("execute service() method");
+        System.out.println("servlet service()");
         super.service(req, resp);
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("execute doGet() method");
+        System.out.println("servlet doGet()");
 
         PrintWriter out = resp.getWriter();
 
@@ -61,6 +61,6 @@ public class LifeCycleServlet extends HttpServlet {
 
     @Override
     public void destroy() {
-        System.out.println("execute destory() method");
+        System.out.println("servlet destroy()");
     }
 }

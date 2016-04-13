@@ -1,7 +1,5 @@
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -14,6 +12,27 @@ public class FirstServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        Cookie[] cookies = req.getCookies();
+        Cookie cookie = new Cookie("key", "value");
+        cookie.setMaxAge(Integer.MAX_VALUE);
+        resp.addCookie(cookie);
+
+        //修改cookie,生成一个同名的cookie来覆盖到原来的cookie
+        //删除cookie
+        cookie.setMaxAge(0);
+        //使用SSL来操作cookie
+        cookie.setSecure(true);
+
+        //操作session
+        HttpSession session = req.getSession(true);
+        session.setAttribute("key", "value");
+        //叫做JSESSIONID的cookie用来协同Session工作
+        String id = session.getId();
+
+        //如果client禁用了cookie，那么server在使用cookie和session的时候会遇到苦难，解决方案是url重写
+        resp.encodeURL("index.jsp?c=1&wd=Java");
+
         this.excute(req, resp);
     }
 

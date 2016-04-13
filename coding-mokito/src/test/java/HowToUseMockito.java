@@ -277,10 +277,10 @@ public class HowToUseMockito {
 
         YiLing spy = spy(new YiLing());
         //不会进入真实方法
-        //doReturn(true).when(spy).go();
+        doReturn(true).when(spy).go();
 
         //会进入真实方法
-        when(spy.go()).thenReturn(true);
+        //when(spy.go()).thenReturn(true);
         Assert.assertTrue(spy.go());
 
     }
@@ -306,9 +306,9 @@ public class HowToUseMockito {
 
         YiLing yiLing = mock(YiLing.class);
         //情况1
-        //when(yiLing.mock()).thenReturn(true);
+        when(yiLing.mock()).thenReturn(true);
         //情况2
-        doReturn(true).when(yiLing).mock();
+        //doReturn(true).when(yiLing).mock();
 
         System.out.println(yiLing.mock());
         System.out.println(yiLing.spy());

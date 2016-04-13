@@ -30,7 +30,6 @@ public class ParamServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
         //每次执行的时候都加载初始化参数，会造成效率低下,解决的办法是写在init方法中,见LifeCycleServlet
         //获取servlet中配置的参数
         System.out.println("InitParameter: " + getInitParameter("initParamOne"));

@@ -12,7 +12,7 @@ public class CharacterEncodingFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        System.out.println("CharacterEncodingFilter 开始");
+        System.out.println("CharacterEncodingFilter 初始化");
         characterEncoding = filterConfig.getInitParameter("characterEncoding");
         enabled = "true".equals(filterConfig.getInitParameter("enabled").trim());
     }
@@ -25,12 +25,12 @@ public class CharacterEncodingFilter implements Filter {
             servletResponse.setCharacterEncoding("UTF-8");
             filterChain.doFilter(servletRequest, servletResponse);
         }
-        System.out.println("CharacterEncodingFilter 执行完毕");
+        System.out.println("CharacterEncodingFilter 结束");
     }
 
     @Override
     public void destroy() {
-        System.out.println("CharacterEncodingFilter 结束");
+        System.out.println("CharacterEncodingFilter 销毁");
         characterEncoding = null;
     }
 }
