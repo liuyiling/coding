@@ -1,3 +1,5 @@
+package com.liuyiling.flume.source;
+
 import org.apache.flume.Context;
 import org.apache.flume.Event;
 import org.apache.flume.EventDeliveryException;
@@ -19,13 +21,13 @@ public class MySource extends AbstractSource implements Configurable, PollableSo
 
     @Override
     public void configure(Context context) {
-        String myProp = context.getString("myProp", "defaultValue");
-
+        String myProp = context.getString("myProp", "");
         this.myProp = myProp;
     }
 
     @Override
     public synchronized void start() {
+        System.out.println("MySource is running!");
         super.start();
     }
 
