@@ -11,13 +11,15 @@ import java.util.concurrent.Executors;
 
 /**
  * Created by liuyl on 16/1/12.
- * 主旨：为了避免数据破坏和死锁，千万不要在同步区域内调用外来方法，要尽量限制同步区域内部的工作量
+ * 为了避免数据破坏和死锁，千万不要在同步区域内（例如synchronized修饰的方法中）调用外来方法，要尽量限制同步区域内部的工作量
+ * 我们需要做到以下几点：
  * 1.对共享的可变数据加锁
  * 2.在同步区内做少量的工作：
  *   获得锁，检查共享数据，转换数据状态，释放锁
  * 3.对于一个很耗时的动作，应该想办法移动到同步区外面
  * 4.对于一个可变的类要并发使用，一定要保证其是线程安全的，尽量通过内部同步（concurrentHashMap）这样性能更高,而不是从外部锁定整个对象(synchronized(map))
- * 5.如果在内部同步了类，就使用以下手段来体高性能：分拆锁,分离锁,非阻塞锁
+ *   要防止其他使用该类的客户端忘了进行外部同步的情况
+ * 5.如果在内部同步了类，就使用以下手段来提高性能：分拆锁,分离锁,非阻塞锁
  */
 
 class ObservableSetTest{
@@ -31,7 +33,9 @@ class ObservableSetTest{
             public void added(ObservableSet set, Integer o) {
                      System.out.println( o );
                 if( o.equals(23) ){
-                    //借助了可重入锁的机制，所以不会一直等待
+                    //因为synchronized是可重入锁的一种，所以底下这一行代码并不会造成死锁
+                    //但是在遍历集合的时候对集合进行了修改，会引发ConcurrentModificationException
+                    //如果要在遍历集合的时候对元素进行删除，应该使用iterator.remove()
                     set.removeObserver(this);
                 }
             }
@@ -40,9 +44,7 @@ class ObservableSetTest{
         for( int i = 0; i < 100; i++){
             observableSet.add(i);
         }
-
     }
-
 }
 
 /**
@@ -67,7 +69,7 @@ class ObservableSetTest2{
                         executor.submit(new Runnable() {
                             @Override
                             public void run() {
-                                //后台线程调用set.removeObserver,一直等待observers锁,但是notifyObjectAdd一直暂用所
+                                //后台线程调用set.removeObserver,一直等待observers锁,但是notifyObjectAdd一直在占用锁
                                 set.removeObserver(observer);
                             }
                         }).get();
@@ -124,12 +126,11 @@ class ObservableSet2 {
 
         List<SetObserver> snapshot = null;
         synchronized (observers){
-            //通知所有的观察者
+            //生成另外一个数组的视图，防止遍历过程中对集合的修改操作引发的异常
             for( SetObserver s : observers){
                 snapshot = new ArrayList<>(observers);
             }
         }
-
         for( SetObserver observer : snapshot){
             //observer.added(this, o);
         }
@@ -142,7 +143,6 @@ class ObservableSet2 {
         }
         return added;
     }
-
 }
 
 
@@ -158,7 +158,7 @@ class ObservableSet3 {
         this.s = s;
     }
 
-    //观察者列表
+    //使用copyOnWrite来解决在同步区域块中调用外来的方法的问题
     private List<SetObserver> observers = new CopyOnWriteArrayList<>();
 
     //加入观察者
@@ -176,7 +176,6 @@ class ObservableSet3 {
             for( SetObserver observer : observers){
                 //observer.added(this, o);
             }
-
     }
 
     public boolean add(Integer o){

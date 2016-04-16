@@ -1,6 +1,5 @@
 package com.liuyiling.java.io;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 

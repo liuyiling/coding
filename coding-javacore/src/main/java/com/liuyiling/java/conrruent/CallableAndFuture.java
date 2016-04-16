@@ -4,72 +4,50 @@ import java.util.concurrent.*;
 
 /**
  * Created by liuyl on 15/12/9.
- * 使用Callable和Future获取执行结果
+ * 使用Callable和Future执行异步处理并获取结果
  */
 public class CallableAndFuture {
 
+    public static void main(String[] agrs) throws InterruptedException, ExecutionException {
 
-    public static void main(String[] agrs){
-
-        /**
-         * 第一种方式
-         */
         ExecutorService executor = Executors.newCachedThreadPool();
-        Task task = new Task();
-        //Future<Integer> result = executor.submit(task);
-        //executor.shutdown();
+        FutureTask futureTask = new FutureTask(new BoilWater());
+        executor.submit(futureTask);
+
+        System.out.println("做饭");
+        Thread.sleep(2000);
+        System.out.println("饭做好了");
+
+        while ( !futureTask.isDone() ) {
+            System.out.println("水还没烧开呢");
+            Thread.sleep(1000);
+        }
+
+        System.out.println(futureTask.get());
 
 
         /**
-         * 下面是第二种方式
+         * 第二种方式
          */
-        FutureTask<Integer> futureTask = new FutureTask<>(task);
-        executor.submit(futureTask);
-        executor.shutdown();
+        Future<String> submit = executor.submit(new BoilWater());
 
+        System.out.println("做饭");
+        Thread.sleep(2000);
+        System.out.println("饭做好了");
 
-        try {
+        while ( !submit.isDone() ) {
+            System.out.println("水还没烧开呢");
             Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
 
-        System.out.println("main is running");
-
-        try {
-            //System.out.println(result.get());
-            //阻塞等待获取
-            System.out.println(futureTask.get());
-            //非阻塞等待获取
-            try {
-                System.out.println(futureTask.get(1000L, TimeUnit.MICROSECONDS));
-            } catch (TimeoutException e) {
-                e.printStackTrace();
-            }
-        } catch (InterruptedException e) {
-            //处理终端异常
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            //处理无法执行任务异常
-            e.printStackTrace();
-        }
-
-        System.out.println("all thread is end");
-
+        System.out.println(submit.get());
     }
-
 }
 
-class Task implements Callable<Integer>{
-
+class BoilWater implements Callable<String> {
     @Override
-    public Integer call() throws Exception {
-        System.out.println("task is running");
-        Thread.sleep(10000);
-        int sum = 0;
-        for(int i = 0; i < 100; i++){
-            sum += i;
-        }
-        return sum;
+    public String call() throws Exception {
+        Thread.sleep(5000);
+        return System.currentTimeMillis() + " 水烧开了";
     }
 }
