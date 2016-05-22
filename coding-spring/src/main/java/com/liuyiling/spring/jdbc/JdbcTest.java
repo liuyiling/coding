@@ -18,7 +18,7 @@ public class JdbcTest {
 
         //使用callback函数进行结果集的处理
         List<User> list = user.findAllUser();
-        //System.out.println(list);
+        System.out.println(list);
 
 
         //测试execute方法
@@ -29,7 +29,7 @@ public class JdbcTest {
         //userDao.tesetUpdate();
 
 
-        //userDao.insert(new User(2,"two"));
+        userDao.insert(new User(2,"two"));
         //userDao.update(new User(2,"twotwo"));
 
         userDao.delete(2);

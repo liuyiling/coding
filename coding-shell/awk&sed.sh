@@ -16,6 +16,8 @@ sed 's/"//g' abc.txt | sed 's/{//g' | sed 's/}//g' | awk -F ":| |," '{print $1,$
 
 
 
+cat textMediaQuality |awk -F "{|=|," '{print $2=$3,$15=$16,$47=$48,$49=$50}'
+
 #12 183.197.49.249:city:沧州,isp:移动,nation:中国,origin:,province:河北
 awk -F " |,|:" ' {if($8=="中国") {total=total+$1;area=$12"-"$4; myarr[area]=myarr[area]+$1;}} END{ for(nation in myarr) {print myarr[nation],myarr[nation]*100.0/total,nation}} ' jsonResult.txt |sort -rn |awk '{print $3,$2}' >result.txt
 
@@ -33,3 +35,7 @@ awk -F " |,|:" '
          }
     }
 ' jsonResult.txt | sort -rn | awk '{print $3,$2}' > result.txt
+
+
+#统计脚本
+awk -F ',' '{if($2 < 60){sum[60] += 1;total++;}else if($2 < 120){sum[120] += 1;total++;}else{sum[180] += 1; total++;}} END{for(i in sum){print i,sum[i]/total*100;}}' DurationSum.txt

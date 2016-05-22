@@ -23,6 +23,7 @@
         <module>coding-tricky</module>
         <module>coding-designpattern</module>
         <module>coding-flume</module>
+        <module>coding-huntjob</module>
     </modules>
 
 

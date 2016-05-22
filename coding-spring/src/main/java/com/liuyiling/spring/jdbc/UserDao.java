@@ -7,21 +7,21 @@ import java.util.List;
  */
 public interface UserDao {
 
-    public List<User> finaAllUser();
+    List<User> finaAllUser();
 
-    public void testExecute();
+    void testExecute();
 
-    public void tesetUpdate();
+    void tesetUpdate();
 
-    public void insert(User user);
+    void insert(User user);
 
-    public void delete(int id);
+    void delete(int id);
 
-    public void update(User user);
+    void update(User user);
 
-    public List<User> selectAll();
+    List<User> selectAll();
 
-    public User selectById(int id);
+    User selectById(int id);
 
 
 

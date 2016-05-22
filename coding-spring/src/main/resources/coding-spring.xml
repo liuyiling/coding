@@ -41,21 +41,45 @@
     </bean>
 
     <!-- 定义拦截器对象 -->
-    <bean id="methodBeforeAdviceImpl" class="com.liuyiling.spring.aop.MethodBeforeAdviceImpl"></bean>
+    <bean id="methodBeforeAdviceImpl" class="com.liuyiling.spring.aop.MethodBeforeAdviceImpl">
+    </bean>
 
-    <bean id="theAdvisor" class="org.springframework.aop.support.NameMatchMethodPointcutAdvisor">
+    <bean id="aopMethodBeforeAdvice" class="org.springframework.aop.support.NameMatchMethodPointcutAdvisor">
         <property name="advice">
             <!-- 拦截器对象，方法前置对象拦截器-->
+            <!-- 通知，负责插入代码的内容-->
             <ref local="methodBeforeAdviceImpl"></ref>
         </property>
         <!-- 拦截所有方法-->
-        <property name="mappedName" value="*"></property>
+        <!-- 切入点，负责插入代码的位置,注意看源码，这边value可以是多个-->
+        <property name="mappedName" value="sayHello"></property>
     </bean>
 
-    <bean id="iocBeanImpl" class="com.liuyiling.spring.ioc.IocBeanImpl"></bean>
+
+    <bean id="methodAfterInterceptor" class="com.liuyiling.spring.aop.MethodAfterInterceptor"></bean>
+
+    <bean id="aopMethodAfterAdvice" class="org.springframework.aop.support.NameMatchMethodPointcutAdvisor">
+        <property name="advice">
+            <!-- 拦截器对象，方法前置对象拦截器-->
+            <ref local="methodAfterInterceptor"></ref>
+        </property>
+        <!-- 拦截所有方法-->
+        <property name="mappedName" value="sayHello"></property>
+    </bean>
+
+
+
+    <bean id="iocBeanImpl" class="com.liuyiling.spring.ioc.IocBeanImpl">
+        <property name="id" value="2"></property>
+    </bean>
 
     <bean id="iocBeanAop" class="org.springframework.aop.framework.ProxyFactoryBean">
-        <property name="interceptorNames" value="theAdvisor"></property>
+        <property name="interceptorNames">
+            <list>
+                <value>aopMethodBeforeAdvice</value>
+                <value>aopMethodAfterAdvice</value>
+            </list>
+        </property>
         <property name="target">
             <ref local="iocBeanImpl"></ref>
         </property>
@@ -66,7 +90,7 @@
     <!-- 只有作用域为singleton的bean才能被销毁-->
     <bean id="resourceBean" class="com.liuyiling.spring.dependson.ResourceBean" init-method="init"
           destroy-method="destory">
-        <property name="file" value="/Users/a/a.txt"></property>
+        <property name="file" value="a.txt"></property>
     </bean>
 
     <bean id="dependentBean" class="com.liuyiling.spring.dependson.DependentBean" init-method="init"

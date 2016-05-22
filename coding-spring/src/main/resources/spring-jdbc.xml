@@ -17,6 +17,30 @@
         <property name="password" value="${jdbc.password}"></property>
     </bean>
 
+    <!-- 事务的设置-->
+    <bean id="jdbcTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+
+    <bean id="transcationAttributeSource" class="org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource">
+        <property name="properties">
+            <props>
+                <prop key="*">PROPAGATION_REQUIRED</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="transactionRun" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager" ref="jdbcTransactionManager"></property>
+        <property name="target">
+            <bean class="com.liuyiling.spring.jdbc.TranscationRun">
+                <property name="userDao" ref="userDao"></property>
+            </bean>
+        </property>
+        <property name="transactionAttributeSource" ref="transcationAttributeSource"></property>
+    </bean>
+
+
     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
         <property name="dataSource" ref="dataSource"></property>
     </bean>

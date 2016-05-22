@@ -32,7 +32,7 @@ public class ReadAndWriteLOck {
         try {
             long start = System.currentTimeMillis();
 
-            while(System.currentTimeMillis() - start <= 20) {
+            while(System.currentTimeMillis() - start <= 200) {
                 System.out.println(thread.getName()+"正在进行读操作");
             }
             System.out.println(thread.getName()+"读操作完毕");

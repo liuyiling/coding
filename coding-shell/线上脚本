@@ -1,0 +1,5 @@
+sudo tar -zxvf /home/$1/
+sudo tar -zxvf /home/$1/*-web-live-broadcast.tar.gz -C ./webapps
+sudo bin/shutdown.sh
+sudo rm -f logs/*
+sudo bin/startup.sh
