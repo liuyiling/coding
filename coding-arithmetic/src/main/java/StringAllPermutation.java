@@ -27,7 +27,7 @@ public class StringAllPermutation {
 
         for(int i = from; i < to; i++){
             swap(str, i, from);
-            CalAllPermutation(str, from+1, to);
+            CalAllPermutation(str, from + 1, to);
             swap(str, i, from);
         }
 
