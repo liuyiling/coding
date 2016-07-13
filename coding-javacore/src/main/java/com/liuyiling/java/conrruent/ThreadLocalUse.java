@@ -109,7 +109,7 @@ class LocalThreadUseBySession{
     private static Session s = null;
 
     public static Session getSession(String name){
-        Session s = (Session) threadSession.get();
+        Session s = threadSession.get();
 
         //每个线程访问的session对象还是同一个,还是会带来并发访问的问题
         if(s == null){

@@ -29,7 +29,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void tesetUpdate() {
         String insertSql = "INSERT INTO USER VALUES(?,?)";
-        jdbcTemplate.update(insertSql, new Object[]{1, "one"});
+        jdbcTemplate.update(insertSql, 1, "one");
     }
 
 

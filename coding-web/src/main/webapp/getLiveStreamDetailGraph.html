@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="dygraph-combined-dev.js"></script>
+<script type="text/javascript" src="jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="jquery.jsonp.js"></script>
+
+<style type="text/css">
+  html, body {width: 100%;height: 100%;margin: 0;padding: 0;}
+  form {text-align: center;}
+  input {margin-top: 1em;}
+  #graphdiv, #graphdiv2 {margin: 2em auto;}
+</style>
+
+
+</head>
+<body>
+    <form dir="ltr">
+        <input id="queryId" name="liveId" type="text">
+        <input value="getLiveStatus" type="button" id="submitBtn"><br>
+    </form>
+<div id="stream_video"></div>
+<div id="stream_audio"></div>
+
+<script type="text/javascript">
+function abc(callbackparam) {
+  alter(callbackparam);
+}
+
+  $('#stream_video').height((document.body.clientHeight - $('form').height()) / 2 - 50)
+    .width(document.body.clientWidth * 1.0);
+  $('#stream_audio').height((document.body.clientHeight - $('form').height()) / 2 - 50)
+    .width(document.body.clientWidth * 1.0);
+  (function(){
+
+    var g1 = null, g2 = null;
+
+    $('#submitBtn').on('click', function(){
+        data = null;
+       $.ajax({
+        type: "get",        
+        url: "http://localhost:8080/servlet/DyGraphServlet",
+        // url: "http://localhost:8080/user/get_stream_log_by_liveId.json",
+        // url: "http://192.168.133.82:8891/data/get_stream_log_by_liveId_jsonp",
+        jsonp: "callbackparam",//服务端用于接收callback调用的function名的参数
+        jsonpCallback:"abc",//callback的function名称
+        data:{liveId:$('#queryId').val()},
+        async:true,
+        dataType:"json",
+        success: function (data) {
+          // var stream_log_video_data = transformStreamLogData(data.data.stream_log, "video");
+          // var stream_log_audio_data = transformStreamLogData(data.data.stream_log, "audio");
+          var stream_log_video_data = transformStreamLogData(data.stream_log, "video");
+          var stream_log_audio_data = transformStreamLogData(data.stream_log, "audio");
+
+        if (g1) {
+          g1.updateOptions({'file' : stream_log_video_data});
+        } else {
+          g1 = new Dygraph(document.getElementById("stream_video"), stream_log_video_data);
+        }
+      
+        if (g2) {
+          g2.updateOptions({'file' : stream_log_audio_data});
+        } else {
+          g2 = new Dygraph(document.getElementById("stream_audio"), stream_log_audio_data);
+        }
+
+        }
+      }); 
+      
+// $.jsonp({
+//   "url": "http://192.168.133.82:8891/data/get_stream_log_by_liveId?liveId=" + $('#queryId').val(),
+//   "success": function(data) {
+//     var stream_log_video_data = transformStreamLogData(data.data.stream_log, "video");
+//     var stream_log_audio_data = transformStreamLogData(data.data.stream_log, "audio");
+
+//     if (g1) {
+//           g1.updateOptions({'file' : stream_log_video_data});
+//         } else {
+//           g1 = new Dygraph(document.getElementById("stream_video"), stream_log_video_data);
+//         }
+      
+//         if (g2) {
+//           g2.updateOptions({'file' : stream_log_audio_data});
+//         } else {
+//           g2 = new Dygraph(document.getElementById("stream_audio"), stream_log_audio_data);
+//         }
+//   },
+//   "error": function(d,msg) {
+//     alert("Could not find user "+msg);
+//   }
+// });
+
+
+      //mock一行代码，用来测试无服务的状态
+      // var data = {
+      //         "liveId": 6138367302887870465,
+      //         "stream_id": "z1.meipai-live.573b400a75b62554a8034122",
+      //         "stream_log": [
+      //           {
+      //             "time": "2016-05-18 00:00:12",
+      //             "duration": 1,
+      //             "bitrate": 0,
+      //             "audio_fps": 0,
+      //             "video_fps": 0
+      //           },
+      //           {
+      //             "time": "2016-05-18 00:00:22",
+      //             "duration": 11,
+      //             "bitrate": 145415.6,
+      //             "audio_fps": 32.4,
+      //             "video_fps": 17.1
+      //           }
+      //         ]
+      //       };
+      
+    });
+    
+    function transformStreamLogData(data, type){
+        var keys = [];
+        var list = [];
+        var str = 'Date,VideoFPS\n';
+        var fpsKey = 'video_fps';
+
+        if (type == 'audio') {
+          str = 'Date,AudioFPS\n';
+          fpsKey = 'audio_fps';
+        }
+        $.each(data[0], function(key, val){
+            keys.push(key);
+        });
+        // keys={audio_fps,bitrate,duration,time,video_fps}
+
+        $.each(data, function(i, d){
+            var arr = [];
+            $.each(d, function(key, val){
+            
+            if(key == "time"){
+              str = str + val;
+            }  
+
+            if(key == fpsKey){
+              str = str + ',' + val + '\n';
+            }          
+            });
+        });
+        
+        return str;
+    }
+  })();
+</script>
+
+</body>
+</html>

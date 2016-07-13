@@ -32,6 +32,17 @@
     </servlet-mapping>
 
 
+    <servlet>
+        <servlet-name>DyGraphServlet</servlet-name>
+        <servlet-class>DyGraphServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>DyGraphServlet</servlet-name>
+        <url-pattern>/servlet/DyGraphServlet</url-pattern>
+    </servlet-mapping>
+
+
     <!-- 全局参数配置,使用  getConfig().getContext().getInitParam(key)  获取 -->
     <context-param>
         <param-name>overallinitParam</param-name>

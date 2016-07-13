@@ -112,7 +112,7 @@ class Subscribler{
 
     private String name;
 
-    public void update(Publisher publisher){};
+    public void update(Publisher publisher){}
 
     public Subscribler() {
     }

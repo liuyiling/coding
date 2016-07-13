@@ -32,7 +32,7 @@ public class DataBaseConnectionPool {
      * 创建连接池的初始化大小
      */
     String connUrl = "jdbc:xx";
-    String driver = "com.mysql.jdbc.Driver";
+    String driver = "com.mysql.jdbc.Driv》er";
     private Map<Connection, String> connectionPool = null;
 
     private void initPool() {

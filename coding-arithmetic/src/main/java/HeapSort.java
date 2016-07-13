@@ -29,6 +29,7 @@ public class HeapSort {
         }
     }
 
+    //从下往上遍历构建最大堆
     public static void createMaxHeap(int arr[], int lastIndex){
         for(int i = (lastIndex - 1) / 2; i >= 0 ; i--){
 

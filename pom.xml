@@ -24,6 +24,7 @@
         <module>coding-designpattern</module>
         <module>coding-flume</module>
         <module>coding-arithmetic</module>
+        <module>coding-bootstrap</module>
     </modules>
 
 

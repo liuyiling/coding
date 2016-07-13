@@ -6,8 +6,6 @@ package com.liuyiling.coding.effective.classandinterface;
  * 既然java之父在设计java的时候包含了接口和抽象类，那么他们就肯定有一些差别（即使不大）
  * 下面，让我们通过一些例子来看
  */
-public class InterfaceAndAbstractClass {
-}
 
 
 /**
@@ -104,3 +102,55 @@ abstract class SingerAndWriter implements Singer2,SongWriter{
 
 
 }
+
+
+interface View{
+    void showDialog();
+    void dismissDialog();
+}
+
+abstract class BaseFragment implements View{
+
+    @Override
+    public void showDialog() {
+        System.out.println("BaseFragment showDialog");
+    }
+
+    @Override
+    public void dismissDialog() {
+        System.out.println("BaseFragment dismissDialog");
+    }
+}
+
+class CustomerFragment extends BaseFragment implements View{
+
+    public void showDiaLog(){
+        super.showDialog();
+    }
+
+    @Override
+    public void showDialog() {
+        System.out.println("FragmentOne showDialog");
+    }
+}
+
+public class InterfaceAndAbstractClass {
+
+    public static void main(String[] agrs){
+        View fragmentOne = new CustomerFragment();
+        fragmentOne.showDialog();
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

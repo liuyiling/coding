@@ -6,6 +6,6 @@ package com.liuyiling.spring.ioc;
  */
 public interface IocBean {
 
-    public void sayHello();
+    void sayHello();
 
 }

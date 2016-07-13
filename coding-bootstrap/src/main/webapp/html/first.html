@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--<b>, <td>, <a>, <img>内联元素在显示时通常不会以新行开始。-->
+<head>
+    <!--在head中可以插入js,css,meta信息-->
+    <meta charset="UTF-8">
+    <title>head区域不在浏览器中显示</title>
+    <style type="text/css">
+        /** id选择器*/
+        #firstH1 {color: blue;}
+        /** class选择器*/
+        p.paragraph {color: aquamarine;}
+        body {background-color: beige;}
+    </style>
+</head>
+
+<h1 class="h1" id="firstH1" style="height: 20px">我的第一个标题</h1>
+
+<p class="paragraph">我的第一个段落</p>
+<hr>
+<!--换行要使用br/,不要使用空行-->
+<a href="http://www.baidu.com" style="text-decoration:none;">百度链接</a><br/>
+<a href="mailto:someone@example.com?cc=someoneelse@example.com&bcc=andsomeoneelse@example.com&subject=Summer%20Party&body=You%20are%20invited%20to%20a%20big%20summer%20party!" target="_top">发送邮件!</a>
+
+<img src="http://static.open-open.com/news/uploadImg/20150224/20150224201613_269.jpg" width="100" height="100" alt="无法载入图像">
+
+<ul>
+    <li>Coffee</li>
+    <li>Milk</li>
+</ul>
+
+<!--定义了文档的区域-->
+<div></div>
+
+<!--组合文档中的行内元素-->
+<span></span>
+</body>
+</html>
