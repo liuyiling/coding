@@ -15,14 +15,17 @@ public class SocketCommunication {
     public static void createClientSokcet() throws IOException, InterruptedException {
 
         //建立一个从本机到服务器的sokcet
-        Socket socket = new Socket("localhost", 8080);
+        Socket socket = new Socket("192.168.41.23", 80);
 
         //获取输入输出流
-        PrintWriter out = new PrintWriter(socket.getOutputStream());
+        PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
         //BufferReader一次读取一个字符
         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-        out.println("请求内容");
+        out.println("GET /index.jsp HTTP/1.1");
+        out.println("Host: localhost:8080");
+        out.println("Connection: close");
+        out.println();
 
         boolean loop = true;
 
@@ -31,6 +34,7 @@ public class SocketCommunication {
 
             if(in.ready()){
                 int i = 0;
+                //结束符是-1
                 while(i != -1){
                     i = in.read();
                     sb.append(i);

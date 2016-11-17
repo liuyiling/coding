@@ -19,7 +19,7 @@ cat test.txt | awk -F " " 'BEGIN{print "begin process"} {print "process 1 " $1} 
 #2014:01 1
 #2015:01 1
 #2016:02 1
-cat time.txt | awk '{bytes[$1]+=$2} END { for(time in bytes) print bytes[time],time}'| sort -n
+cat time.txt | awk '{bytes[$1]+=$2} END { for(time in bytes) print bytes[time],time}' | sort -n
 
 #99乘法表
 awk 'BEGIN{ for(i=1;i<=3;i++) { for(j=1;j<=2;j++) { tarr[i,j]=i*j;print i,"*",j,"=",tarr[i,j]}}}'

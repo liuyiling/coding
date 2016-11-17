@@ -33,13 +33,13 @@ public class HeapSort {
     public static void createMaxHeap(int arr[], int lastIndex){
         for(int i = (lastIndex - 1) / 2; i >= 0 ; i--){
 
-            //记录所判断的节点
-            int k = i;
+            //记录所判断的节点位置
+            int position = i;
 
             //遍历到最后一个节点，然后将大于该节点的值与当前节点交换
-            while( 2 * k + 1 <= lastIndex){
+            while( 2 * position + 1 <= lastIndex){
 
-                int biggerIndex = 2 * k + 1;
+                int biggerIndex = 2 * position + 1;
                 //存在右节点
                 if( biggerIndex + 1 <= lastIndex){
                     //且右节点大于左节点
@@ -49,9 +49,9 @@ public class HeapSort {
                 }
 
                 //确认完子节点的大小之后进行交换
-                if(arr[k] < arr[biggerIndex]){
-                    swap(arr, k, biggerIndex);
-                    k = biggerIndex;
+                if(arr[position] < arr[biggerIndex]){
+                    swap(arr, position, biggerIndex);
+                    position = biggerIndex;
                 } else {
                     break;
                 }

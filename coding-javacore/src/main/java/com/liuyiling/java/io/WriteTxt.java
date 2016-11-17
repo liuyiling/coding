@@ -13,15 +13,28 @@ public class WriteTxt {
 
     public static void main(String[] agrs) {
 
-        try {
-            String data = "This conten will append to the end of the file";
+        String[] firstName = new String[]{"w", "l", "z", "y", "h", "x", "s", "g"};
+        String[] lastName = new String[]{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p",
+                "q","r","s","t","u","v","w","x","y","z"};
+        String[] lastName2 = new String[]{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p",
+                "q","r","s","t","u","v","w","x","y","z"};
 
-            File file = new File("/Users/a/Downloads/test.txt");
+        try {
+            File file = new File("/Users/meitu/Downloads/mailAddrs.txt");
 
             if (!file.exists()) {
                 file.createNewFile();
             }
 
+            String data = "";
+            for(String one : firstName){
+                for(String two : lastName){
+                    for(String third : lastName2){
+                        String totalName = one + two + third + "@meitu.com" + "\n";
+                        data += totalName;
+                    }
+                }
+            }
 
             FileWriter fileWriter = new FileWriter(file, true);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);

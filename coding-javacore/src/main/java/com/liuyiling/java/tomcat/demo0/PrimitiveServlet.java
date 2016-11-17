@@ -1,4 +1,4 @@
-package com.liuyiling.java.network;
+package com.liuyiling.java.tomcat.demo0;
 
 import javax.servlet.*;
 import java.io.IOException;
@@ -26,6 +26,8 @@ public class PrimitiveServlet implements Servlet{
     @Override
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
         System.out.println("from service");
+
+        //输出HTTP的返回结果
         PrintWriter writer = res.getWriter();
         writer.println("Hello.I am 610");
     }
