@@ -1,7 +1,7 @@
 package com.liuyiling.java.dynamicProxy;
 
-import com.liuyiling.java.staticProxy.Calculator;
-import com.liuyiling.java.staticProxy.CalsulatorImpl;
+import com.liuyiling.java.staticProxy.Subject;
+import com.liuyiling.java.staticProxy.RealSubject;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -14,42 +14,10 @@ import java.lang.reflect.Proxy;
  */
 public class DynamicProxyClass {
 
-
-    public void testDynamicProxy() {
-
-        Calculator calculator = new CalsulatorImpl();
-        LogHandler logHandler = new LogHandler(calculator);
-        Calculator proxy = (Calculator) Proxy.newProxyInstance(calculator.getClass().getClassLoader(),
-                calculator.getClass().getInterfaces(),
-                logHandler);
-        proxy.add(1,1);
-
+    public static void main(String[] agrs) {
+        Subject instance = DynamicProxyFactory.getInstance();
+        instance.dealTask("dealTask");
     }
 
 }
 
-class LogHandler implements InvocationHandler {
-
-    Object object;
-
-    public LogHandler(Object object) {
-        this.object = object;
-    }
-
-    public Object invoke(Object obj1, Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
-        this.doBefore();
-        Object o = method.invoke(obj1, args);
-        this.doAfter();
-        return o;
-    }
-
-
-    public void doBefore() {
-        System.out.println("do this before!");
-    }
-
-    public void doAfter(){
-        System.out.println("do this after!");
-    }
-
-}

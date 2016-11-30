@@ -25,6 +25,8 @@
         <module>coding-flume</module>
         <module>coding-arithmetic</module>
         <module>coding-bootstrap</module>
+        <module>coding-protocolBuffer</module>
+        <module>coding-grpc</module>
     </modules>
 
 
