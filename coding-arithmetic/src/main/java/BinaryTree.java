@@ -6,11 +6,15 @@ import java.util.concurrent.ArrayBlockingQueue;
 /**
  * Created by liuyl on 16/5/18.
  * 二叉树的相关面试题
+ * 二叉树是许多高级树的基础：
+ * 1.使用二叉查找缩短查找时间
+ * 2.Linux内存管理或者JDK中的TreeSet都用到了红黑树
+ * 3.mysql中的索引也用到了B-树
  */
 public class BinaryTree {
 
     public static void main(String[] agrs) {
-        //preOrderTravels();
+        //preOrderTravel();
         //levelOrderTravel();
         levelOrderNoRecursion();
     }
@@ -63,7 +67,8 @@ public class BinaryTree {
         return tree;
     }
 
-    public static void preOrderTravels() {
+    //前序遍历
+    public static void preOrderTravel() {
         int[] arr = new int[]{
                 1, 2, 3, 4, 5, 6, 7
         };
@@ -85,6 +90,7 @@ public class BinaryTree {
 
     }
 
+    //层次遍历
     public static void levelOrderTravel() {
         int[] arr = new int[]{
                 1, 2, 3, 4, 5, 6, 7
@@ -114,6 +120,7 @@ public class BinaryTree {
 
     }
 
+    //非递归的层次遍历
     public static void levelOrderNoRecursion() {
         int[] arr = new int[]{
                 1, 2, 3, 4, 5, 6, 7
@@ -144,6 +151,7 @@ public class BinaryTree {
         levelOrderNoRecursion(node.right, level - 1);
     }
 
+    //获取二叉树的高度
     public static int getHeightForTheTree(Node node) {
         if (node == null) {
             return 0;
