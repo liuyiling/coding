@@ -19,7 +19,7 @@
         <module>coding-spring</module>
         <module>coding-jersey</module>
         <module>coding-effectivejava</module>
-        <module>coding-common</module>
+        <module>coding-log4j</module>
         <module>coding-tricky</module>
         <module>coding-designpattern</module>
         <module>coding-flume</module>
@@ -27,6 +27,7 @@
         <module>coding-bootstrap</module>
         <module>coding-protocolBuffer</module>
         <module>coding-grpc</module>
+        <module>coding-redis</module>
     </modules>
 
 

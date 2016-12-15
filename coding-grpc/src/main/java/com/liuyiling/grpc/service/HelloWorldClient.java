@@ -9,7 +9,6 @@ import liuyiling.grpc.pb.HelloRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.PrintStream;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -29,7 +28,7 @@ public class HelloWorldClient {
 
     public HelloWorldClient(ManagedChannelBuilder<?> channelBuilder) {
         channel = channelBuilder.build();
-        blockingStub = GreeterGrpc.newBlockingStub(channel);
+        blockingStub = GreeterGrpc.newBlockingStub(channel).withDeadlineAfter(60000, TimeUnit.MILLISECONDS);
     }
 
     public void shutdown() throws InterruptedException {

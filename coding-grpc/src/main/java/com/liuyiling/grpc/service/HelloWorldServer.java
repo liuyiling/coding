@@ -48,6 +48,7 @@ public class HelloWorldServer {
 
     private void blockUtinlShutdonw() throws InterruptedException {
         if(server != null){
+            //服务端阻塞直到退出
             server.awaitTermination();
         }
     }
@@ -59,6 +60,7 @@ public class HelloWorldServer {
     }
 
 
+    //server端实现类-拓展原有的接口
     static class GreeterImpl extends GreeterGrpc.GreeterImplBase {
 
         @Override
