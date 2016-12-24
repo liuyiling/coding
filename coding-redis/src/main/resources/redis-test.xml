@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- 该配置文件中介绍了使用该redis组件时,需要的配置方式-->
+
+    <!-- 通过配置文件扫描获取详细的配置信息 -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location">
+            <value>redis-test.properties</value>
+        </property>
+    </bean>
+    
+    <!-- 初始化jedisPool的配置,用于创建JedisPoolFactory时使用-->
+    <bean id="jedisConfig" class="org.apache.commons.pool2.impl.GenericObjectPoolConfig">
+        <property name="maxTotal" value="500"/>
+        <property name="maxIdle" value="10"/>
+        <property name="minIdle" value="2"/>
+        <property name="blockWhenExhausted" value="true"/>
+        <property name="maxWaitMillis" value="500"/>
+        <property name="lifo" value="false"/>
+        <property name="testOnBorrow" value="false"/>
+        <property name="testOnReturn" value="false"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="numTestsPerEvictionRun" value="-2"/>
+        <property name="timeBetweenEvictionRunsMillis" value="30000"/>
+        <property name="softMinEvictableIdleTimeMillis" value="600000"/>
+        <property name="minEvictableIdleTimeMillis" value="-1"/>
+    </bean>
+
+    <bean id="bizRedisCluster" class="com.liuyiling.coding.redis.cluster.RedisCluster" destroy-method="destory">
+        <property name="serverLists" ref="jedisPortList"/>
+    </bean>
+    
+    <!-- 构建redis抽象Bean-->
+    <bean id="baseRedis" abstract="true" init-method="init">
+        <property name="poolConfig" ref="jedisConfig"/>
+        <property name="tryTime" value="${redis.tryTime}"/>
+    </bean>
+
+    <bean id="jedisPortList" class="java.util.LinkedList">
+        <constructor-arg>
+            <list>
+                <bean id="redis0" class="com.liuyiling.coding.redis.RedisMSServer" init-method="init">
+                    <property name="master">
+                        <bean class="com.liuyiling.coding.redis.client.RedisClient" parent="baseRedis">
+                            <property name="server" value="${redis0.master.server}"/>
+                        </bean>
+                    </property>
+                    <property name="slave">
+                        <bean class="com.liuyiling.coding.redis.client.RedisClient" parent="baseRedis">
+                            <property name="server" value="${redis0.slave.server}"/>
+                        </bean>
+                    </property>
+                </bean>
+                <bean id="redis1" class="com.liuyiling.coding.redis.RedisMSServer" init-method="init">
+                    <property name="master">
+                        <bean class="com.liuyiling.coding.redis.client.RedisClient" parent="baseRedis">
+                            <property name="server" value="${redis1.master.server}"/>
+                        </bean>
+                    </property>
+                    <property name="slave">
+                        <bean class="com.liuyiling.coding.redis.client.RedisClient" parent="baseRedis">
+                            <property name="server" value="${redis1.slave.server}"/>
+                        </bean>
+                    </property>
+                </bean>
+                <bean id="redis2" class="com.liuyiling.coding.redis.RedisMSServer" init-method="init">
+                    <property name="master">
+                        <bean class="com.liuyiling.coding.redis.client.RedisClient" parent="baseRedis">
+                            <property name="server" value="${redis2.master.server}"/>
+                        </bean>
+                    </property>
+                    <property name="slave">
+                        <bean class="com.liuyiling.coding.redis.client.RedisClient" parent="baseRedis">
+                            <property name="server" value="${redis2.slave.server}"/>
+                        </bean>
+                    </property>
+                </bean>
+                <bean id="redis3" class="com.liuyiling.coding.redis.RedisMSServer" init-method="init">
+                    <property name="master">
+                        <bean class="com.liuyiling.coding.redis.client.RedisClient" parent="baseRedis">
+                            <property name="server" value="${redis3.master.server}"/>
+                        </bean>
+                    </property>
+                    <property name="slave">
+                        <bean class="com.liuyiling.coding.redis.client.RedisClient" parent="baseRedis">
+                            <property name="server" value="${redis3.slave.server}"/>
+                        </bean>
+                    </property>
+                </bean>
+                <bean id="redis4" class="com.liuyiling.coding.redis.RedisMSServer" init-method="init">
+                    <property name="master">
+                        <bean class="com.liuyiling.coding.redis.client.RedisClient" parent="baseRedis">
+                            <property name="server" value="${redis4.master.server}"/>
+                        </bean>
+                    </property>
+                    <property name="slave">
+                        <bean class="com.liuyiling.coding.redis.client.RedisClient" parent="baseRedis">
+                            <property name="server" value="${redis4.slave.server}"/>
+                        </bean>
+                    </property>
+                </bean>
+                <bean id="redis5" class="com.liuyiling.coding.redis.RedisMSServer" init-method="init">
+                    <property name="master">
+                        <bean class="com.liuyiling.coding.redis.client.RedisClient" parent="baseRedis">
+                            <property name="server" value="${redis5.master.server}"/>
+                        </bean>
+                    </property>
+                    <property name="slave">
+                        <bean class="com.liuyiling.coding.redis.client.RedisClient" parent="baseRedis">
+                            <property name="server" value="${redis5.slave.server}"/>
+                        </bean>
+                    </property>
+                </bean>
+                <bean id="redis6" class="com.liuyiling.coding.redis.RedisMSServer" init-method="init">
+                    <property name="master">
+                        <bean class="com.liuyiling.coding.redis.client.RedisClient" parent="baseRedis">
+                            <property name="server" value="${redis6.master.server}"/>
+                        </bean>
+                    </property>
+                    <property name="slave">
+                        <bean class="com.liuyiling.coding.redis.client.RedisClient" parent="baseRedis">
+                            <property name="server" value="${redis6.slave.server}"/>
+                        </bean>
+                    </property>
+                </bean>
+                <bean id="redis7" class="com.liuyiling.coding.redis.RedisMSServer" init-method="init">
+                    <property name="master">
+                        <bean class="com.liuyiling.coding.redis.client.RedisClient" parent="baseRedis">
+                            <property name="server" value="${redis7.master.server}"/>
+                        </bean>
+                    </property>
+                    <property name="slave">
+                        <bean class="com.liuyiling.coding.redis.client.RedisClient" parent="baseRedis">
+                            <property name="server" value="${redis7.slave.server}"/>
+                        </bean>
+                    </property>
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+
+   
+
+</beans>

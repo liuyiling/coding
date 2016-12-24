@@ -20,7 +20,7 @@ public class WriteTxt {
                 "q","r","s","t","u","v","w","x","y","z"};
 
         try {
-            File file = new File("/Users/meitu/Downloads/mailAddrs.txt");
+            File file = new File("/Users/Downloads/mailAddrs.txt");
 
             if (!file.exists()) {
                 file.createNewFile();
@@ -30,7 +30,7 @@ public class WriteTxt {
             for(String one : firstName){
                 for(String two : lastName){
                     for(String third : lastName2){
-                        String totalName = one + two + third + "@meitu.com" + "\n";
+                        String totalName = one + two + third + "" + "\n";
                         data += totalName;
                     }
                 }

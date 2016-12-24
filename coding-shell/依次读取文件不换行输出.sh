@@ -19,7 +19,7 @@ done
 m_date=160802
 while(($m_date<=160802))
 do
-  mysql -h 192.168.21.55 -P 3327 -umeitumv -p123456 -e "CREATE TABLE live_quality.sdk_report_$m_date (id bigint(20) unsigned NOT NULL AUTO_INCREMENT,live_id bigint(20) unsigned NOT NULL,uid int(10) unsigned NOT NULL DEFAULT '0',ip varchar(32) NOT NULL DEFAULT '',time bigint(20) unsigned NOT NULL DEFAULT '0',client_id varchar(25) NOT NULL DEFAULT '',locale tinyint(3) unsigned NOT NULL DEFAULT '0',play_time bigint(20) NOT NULL DEFAULT '0',version varchar(20) NOT NULL DEFAULT '',pretty_up tinyint(3) unsigned NOT NULL DEFAULT '0',model varchar(40) NOT NULL DEFAULT '',audio_fps float(7,3) NOT NULL DEFAULT '0.000',video_fps float(7,3) NOT NULL DEFAULT '0.000',total_av_bitrate bigint(20) NOT NULL DEFAULT '0',downstream_rate int(10) unsigned NOT NULL DEFAULT '0',type tinyint(3) unsigned NOT NULL DEFAULT '0',PRIMARY KEY (`id`),KEY live_id_type_time (live_id,type),KEY time (time)) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSEDKEY_BLOCK_SIZE=8;"
+  mysql -h host -P 3326 -uroot -p123456 -e "xxx"
   echo $m_date;
   let m_date++;
 done
