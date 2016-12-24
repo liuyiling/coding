@@ -3,6 +3,7 @@ package com.liuyiling.coding.redis;
 import redis.clients.jedis.Jedis;
 
 /**
+ * 由于采用异步操作,故对所有的redis操作都放在统一的Callback中
  * Created by liuyl on 2016/12/20.
  */
 public abstract class JedisPortCallback<V> {
