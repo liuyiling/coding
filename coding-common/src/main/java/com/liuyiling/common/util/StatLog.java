@@ -13,10 +13,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
+ * 统计操作执行时间的日志工具
  * Created by liuyl on 2016/12/21.
  */
-public class StatLog implements Runnable{
-    private static Logger log = LoggerFactory.getLogger("debug_stat");
+public class StatLog implements Runnable {
+
+    private static Logger LOGGER = LoggerFactory.getLogger("debug_stat");
+
     private static AtomicLong count = new AtomicLong(0L);
     private static AtomicLong errorCount = new AtomicLong(0L);
     private static Map<String, AtomicLong> statVars = new ConcurrentHashMap();
@@ -32,6 +35,35 @@ public class StatLog implements Runnable{
     private static long startTime;
     private static long interval;
     private boolean isStopped;
+
+    static {
+        printStat(5000L);
+    }
+
+    public static StatLog printStat(long interval) {
+        LOGGER.info("Start Api Server stat LOGGER.");
+        final StatLog statLog = new StatLog(System.currentTimeMillis(), interval);
+        final Thread thread = new Thread(statLog, "StatLog");
+        //该统计日志的时间作为后台运行
+        thread.setDaemon(true);
+        thread.start();
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                try {
+                    statLog.shutdown();
+                    thread.interrupt();
+                    thread.join();
+                } catch (InterruptedException var2) {
+                }
+            }
+        });
+        return statLog;
+    }
+
+    public StatLog(long startTime2, long interval2) {
+        startTime = startTime2;
+        interval = interval2;
+    }
 
     public static void setPausePrint(boolean print) {
         pausePrint.set(print);
@@ -50,12 +82,11 @@ public class StatLog implements Runnable{
     }
 
     public static synchronized void registerVar(String var) {
-        if(statVars.get(var) == null) {
+        if (statVars.get(var) == null) {
             statVars.put(var, new AtomicLong(0L));
             lastStatVars.put(var, new AtomicLong(0L));
             maxStatVars.put(var, new AtomicLong(0L));
         }
-
     }
 
     public static void registerExecutor(String name, ThreadPoolExecutor executor) {
@@ -67,14 +98,14 @@ public class StatLog implements Runnable{
     }
 
     public static long inc(String var, int value) {
-        AtomicLong c = (AtomicLong)statVars.get(var);
-        if(c == null) {
+        AtomicLong c = (AtomicLong) statVars.get(var);
+        if (c == null) {
             registerVar(var);
-            c = (AtomicLong)statVars.get(var);
+            c = (AtomicLong) statVars.get(var);
         }
 
-        long r = c.addAndGet((long)value);
-        if(r < 0L) {
+        long r = c.addAndGet((long) value);
+        if (r < 0L) {
             r = 0L;
             c.set(0L);
         }
@@ -83,22 +114,29 @@ public class StatLog implements Runnable{
     }
 
     public static long dec(String var) {
-        AtomicLong c = (AtomicLong)statVars.get(var);
-        return c != null?c.decrementAndGet():0L;
+        AtomicLong c = (AtomicLong) statVars.get(var);
+        return c != null ? c.decrementAndGet() : 0L;
     }
 
     public static long inc(int delta) {
-        return count.addAndGet((long)delta);
+        return count.addAndGet((long) delta);
     }
 
+    /**
+     * 增加某个操作的处理时间
+     *
+     * @param var          例如：jedis.incr
+     * @param processCount 操作次数
+     * @param processTime  操作耗时
+     */
     public static void incProcessTime(String var, int processCount, long processTime) {
         incProcessTime(processStats, var, processCount, processTime);
         incProcessTime(processStatsLast, var, processCount, processTime);
     }
 
     private static void incProcessTime(Map<String, StatLog.ProcessStat> pstats, String var, int processCount, long processTime) {
-        StatLog.ProcessStat ps = (StatLog.ProcessStat)pstats.get(var);
-        if(ps == null) {
+        StatLog.ProcessStat ps = pstats.get(var);
+        if (ps == null) {
             ps = new StatLog.ProcessStat();
             pstats.put(var, ps);
         }
@@ -119,12 +157,7 @@ public class StatLog implements Runnable{
     }
 
     public static long incError(int delta) {
-        return errorCount.addAndGet((long)delta);
-    }
-
-    public StatLog(long startTime2, long interval2) {
-        startTime = startTime2;
-        interval = interval2;
+        return errorCount.addAndGet((long) delta);
     }
 
     public static void resetStartTime(long newTime) {
@@ -136,28 +169,7 @@ public class StatLog implements Runnable{
     }
 
     public static boolean isCacheStatkey(String keySuffix) {
-        return keySuffix == null?false:cacheStatKeys.contains(keySuffix);
-    }
-
-    public static StatLog printStat(long interval) {
-        log.info("Start Api Server stat log.");
-        final StatLog statLog = new StatLog(System.currentTimeMillis(), interval);
-        final Thread thread = new Thread(statLog, "StatLog");
-        thread.setDaemon(true);
-        thread.start();
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            public void run() {
-                try {
-                    statLog.shutdown();
-                    thread.interrupt();
-                    thread.join();
-                } catch (InterruptedException var2) {
-                    ;
-                }
-
-            }
-        });
-        return statLog;
+        return keySuffix == null ? false : cacheStatKeys.contains(keySuffix);
     }
 
     public void shutdown() {
@@ -170,48 +182,48 @@ public class StatLog implements Runnable{
         long lastTime = 0L;
         long max = 0L;
 
-        while(!this.isStopped) {
+        while (!this.isStopped) {
             try {
-                synchronized(this) {
+                synchronized (this) {
                     this.wait(interval);
                 }
 
-                if(!pausePrint.get()) {
+                if (!pausePrint.get()) {
                     long e = System.currentTimeMillis();
-                    if(e == 0L) {
+                    if (e == 0L) {
                         break;
                     }
 
-                    if(e != startTime) {
+                    if (e != startTime) {
                         cnt = count.get();
                         long cur = (cnt - lastCount) * 1000L / (e - lastTime);
-                        if(cur > max) {
+                        if (cur > max) {
                             max = cur;
                         }
 
-                        log.info("---------------------------");
-                        log.info("JAVA HEAP: " + memoryReport() + ", UP TIME: " + (e - startTime) / 1000L + ", min: " + (e - startTime) / 60000L);
+                        LOGGER.info("---------------------------");
+                        LOGGER.info("JAVA HEAP: " + memoryReport() + ", UP TIME: " + (e - startTime) / 1000L + ", min: " + (e - startTime) / 60000L);
                         TreeSet keys = new TreeSet(statVars.keySet());
                         StringBuilder sb = new StringBuilder("[");
                         boolean firstLoop = true;
                         Iterator jsonLog = keys.iterator();
 
-                        while(jsonLog.hasNext()) {
-                            String i = (String)jsonLog.next();
-                            AtomicLong c = (AtomicLong)statVars.get(i);
-                            AtomicLong entry = (AtomicLong)lastStatVars.get(i);
-                            AtomicLong m1 = (AtomicLong)maxStatVars.get(i);
+                        while (jsonLog.hasNext()) {
+                            String i = (String) jsonLog.next();
+                            AtomicLong c = (AtomicLong) statVars.get(i);
+                            AtomicLong entry = (AtomicLong) lastStatVars.get(i);
+                            AtomicLong m1 = (AtomicLong) maxStatVars.get(i);
                             long cnt1 = c.get();
-                            if(cnt1 != 0L) {
+                            if (cnt1 != 0L) {
                                 long max1 = m1.get();
                                 long lastCount1 = entry.get();
                                 long avg1 = cnt1 * 1000L / (e - startTime);
                                 long cur1 = (cnt1 - lastCount1) * 1000L / (e - lastTime);
-                                if(cur1 > max1) {
-                                    max1 = (long)((int)cur1);
+                                if (cur1 > max1) {
+                                    max1 = (long) ((int) cur1);
                                 }
 
-                                if(!firstLoop) {
+                                if (!firstLoop) {
                                     sb.append(",");
                                 } else {
                                     firstLoop = false;
@@ -224,9 +236,9 @@ public class StatLog implements Runnable{
                         }
 
                         sb.append("]");
-                        log.info(sb.toString());
-                        if(processStats.size() > 0) {
-                            log.info(this.statProcessSt().toString());
+                        LOGGER.info(sb.toString());
+                        if (processStats.size() > 0) {
+                            LOGGER.info(this.statProcessSt().toString());
                         }
 
                         sb.delete(0, sb.length());
@@ -236,16 +248,16 @@ public class StatLog implements Runnable{
                         int var34 = 0;
 
                         Map.Entry var36;
-                        for(Iterator var35 = executors.entrySet().iterator(); var35.hasNext(); var33.append(this.statJsonExecutor((String)var36.getKey(), (ThreadPoolExecutor)var36.getValue()))) {
-                            var36 = (Map.Entry)var35.next();
-                            sb.append(this.statExecutor((String)var36.getKey(), (ThreadPoolExecutor)var36.getValue())).append(", ");
-                            if(var34++ > 0) {
+                        for (Iterator var35 = executors.entrySet().iterator(); var35.hasNext(); var33.append(this.statJsonExecutor((String) var36.getKey(), (ThreadPoolExecutor) var36.getValue()))) {
+                            var36 = (Map.Entry) var35.next();
+                            sb.append(this.statExecutor((String) var36.getKey(), (ThreadPoolExecutor) var36.getValue())).append(", ");
+                            if (var34++ > 0) {
                                 var33.append(",");
                             }
                         }
 
                         var33.append("]");
-                        log.info(sb.append(" ]").toString());
+                        LOGGER.info(sb.append(" ]").toString());
                         LogCollectorFactory.getLogCollector().log("common-pool", "threadpool", var33.toString());
                         lastTime = e;
                         lastCount = cnt;
@@ -256,30 +268,30 @@ public class StatLog implements Runnable{
             }
         }
 
-        log.info("Stat log stop");
+        LOGGER.info("Stat LOGGER stop");
     }
 
     private StringBuilder statProcessSt() {
         StringBuilder pstatSb = (new StringBuilder(processStats.size() * 64)).append("processStat: ");
 
         String psKey;
-        for(Iterator var2 = processStats.entrySet().iterator(); var2.hasNext(); processStatsLast.put(psKey, new StatLog.ProcessStat())) {
-            Map.Entry entry = (Map.Entry)var2.next();
-            psKey = (String)entry.getKey();
-            StatLog.ProcessStat ps = (StatLog.ProcessStat)entry.getValue();
-            StatLog.ProcessStat psLast = (StatLog.ProcessStat)processStatsLast.get(psKey);
-            StatLog.ProcessStat psMax = (StatLog.ProcessStat)processStatsMax.get(psKey);
-            if(psMax == null || psMax.getAvgTime() < psLast.getAvgTime()) {
+        for (Iterator var2 = processStats.entrySet().iterator(); var2.hasNext(); processStatsLast.put(psKey, new StatLog.ProcessStat())) {
+            Map.Entry entry = (Map.Entry) var2.next();
+            psKey = (String) entry.getKey();
+            StatLog.ProcessStat ps = (StatLog.ProcessStat) entry.getValue();
+            StatLog.ProcessStat psLast = (StatLog.ProcessStat) processStatsLast.get(psKey);
+            StatLog.ProcessStat psMax = (StatLog.ProcessStat) processStatsMax.get(psKey);
+            if (psMax == null || psMax.getAvgTime() < psLast.getAvgTime()) {
                 processStatsMax.put(psKey, psLast);
-                psMax = (StatLog.ProcessStat)processStatsMax.get(psKey);
+                psMax = (StatLog.ProcessStat) processStatsMax.get(psKey);
             }
 
-            if(ps.getAvgTime() > 0L) {
-                pstatSb.append((String)entry.getKey()).append("{").append(ps.getCount()).append("=").append(ps.getAvgTime()).append(",").append(psLast.getCount()).append("=").append(psLast.getAvgTime()).append(",").append(psMax.getCount()).append("=").append(psMax.getAvgTime()).append("},\n ");
+            if (ps.getAvgTime() > 0L) {
+                pstatSb.append((String) entry.getKey()).append("{").append(ps.getCount()).append("=").append(ps.getAvgTime()).append(",").append(psLast.getCount()).append("=").append(psLast.getAvgTime()).append(",").append(psMax.getCount()).append("=").append(psMax.getAvgTime()).append("},\n ");
             }
         }
 
-        if(pstatSb.lastIndexOf(",") > 0) {
+        if (pstatSb.lastIndexOf(",") > 0) {
             pstatSb.delete(pstatSb.lastIndexOf(","), pstatSb.length() - 1);
         }
 
@@ -288,17 +300,17 @@ public class StatLog implements Runnable{
 
     public static String memoryReport() {
         Runtime runtime = Runtime.getRuntime();
-        double freeMemory = (double)runtime.freeMemory() / 1048576.0D;
-        double maxMemory = (double)runtime.maxMemory() / 1048576.0D;
-        double totalMemory = (double)runtime.totalMemory() / 1048576.0D;
+        double freeMemory = (double) runtime.freeMemory() / 1048576.0D;
+        double maxMemory = (double) runtime.maxMemory() / 1048576.0D;
+        double totalMemory = (double) runtime.totalMemory() / 1048576.0D;
         double usedMemory = totalMemory - freeMemory;
         double percentFree = (maxMemory - usedMemory) / maxMemory * 100.0D;
-        if(percentFree < 10.0D) {
+        if (percentFree < 10.0D) {
             outOfMemory.set(true);
-            log.error("Detected OutOfMemory potentia memory > 90%, stop broadcast presence !!!!!!");
-        } else if(outOfMemory.get() && percentFree > 20.0D) {
+            LOGGER.error("Detected OutOfMemory potentia memory > 90%, stop broadcast presence !!!!!!");
+        } else if (outOfMemory.get() && percentFree > 20.0D) {
             outOfMemory.set(false);
-            log.error("Detected memory return to normal, memory < 80%, resume broadcast presence.");
+            LOGGER.error("Detected memory return to normal, memory < 80%, resume broadcast presence.");
         }
 
         double percentUsed = 100.0D - percentFree;
@@ -328,10 +340,9 @@ public class StatLog implements Runnable{
         return jb.toString();
     }
 
-    static {
-        printStat(5000L);
-    }
-
+    /**
+     * 处理统计日志的实体
+     */
     public static class ProcessStat {
         public AtomicLong count = new AtomicLong();
         public AtomicLong time = new AtomicLong();
@@ -340,7 +351,7 @@ public class StatLog implements Runnable{
         }
 
         private void addStat(int pcount, long ptime) {
-            this.count.addAndGet((long)pcount);
+            this.count.addAndGet((long) pcount);
             this.time.addAndGet(ptime);
         }
 
@@ -349,7 +360,7 @@ public class StatLog implements Runnable{
         }
 
         private long getAvgTime() {
-            return this.count.get() > 0L?this.time.get() / this.count.get():0L;
+            return this.count.get() > 0L ? this.time.get() / this.count.get() : 0L;
         }
     }
 }

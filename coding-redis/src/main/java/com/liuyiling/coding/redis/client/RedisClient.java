@@ -1,7 +1,6 @@
 package com.liuyiling.coding.redis.client;
 
 import com.liuyiling.coding.redis.JedisPortCallback;
-import com.liuyiling.coding.redis.log.RedisLog;
 import com.liuyiling.coding.redis.pool.JedisPoolFactory;
 import com.liuyiling.common.util.CodecHandler;
 import com.liuyiling.common.util.StatLog;
@@ -74,6 +73,7 @@ public class RedisClient implements BasicRedisClient {
     public void init() {
         this.jedisPool = JedisPoolFactory.getPool(this.poolConfig, uri);
 
+        //每间隔30s执行一次定时的周期性任务,用于检测redis的健康状况
         new Timer().scheduleAtFixedRate(
                 new TimerTask() {
                     @Override
@@ -128,6 +128,9 @@ public class RedisClient implements BasicRedisClient {
         return callable(callback, tryTime, false);
     }
 
+    /**
+     * 具体执行redis命令的逻辑代码
+     */
     public <K> K callable(JedisPortCallback<K> callback, int tryTime, boolean isMulti) {
         //快速失败
         if (!healthy.get()) {
@@ -147,18 +150,20 @@ public class RedisClient implements BasicRedisClient {
                     jedis = jedisPool.getResource();
                     value = callback.call(jedis);
                     costTime = System.currentTimeMillis() - startTime;
+
+                    //打印统计日志
                     StatLog.incProcessTime("jedis." + callback.getName(), 1, costTime);
+                    //打印正常日志
                     if (LOGGER.isDebugEnabled() && costTime < REDIS_SLOW_TIME) {
                         LOGGER.debug(getClientSign(jedis) + " " + callback.getName()
                                 + ", key: " + callback.getKey() + " result:" + value);
                     } else if (costTime >= REDIS_SLOW_TIME) {
+                        //打印非正常日志
                         StatLog.inc("jedis.slowget");
                         LOGGER.warn(getClientSign(jedis) + " " + callback.getName()
                                 + ", cost " + costTime + " key: " + callback.getKey()
                                 + " result:" + value);
                     }
-
-                    RedisLog.slowLog(getClientSign(jedis), costTime);
                     break;
                 } catch (JedisConnectionException jce) {
                     // should retry

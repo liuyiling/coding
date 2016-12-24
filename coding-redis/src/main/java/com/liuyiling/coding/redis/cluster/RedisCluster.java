@@ -16,15 +16,33 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 某个服务存储数据时需要使用的集群
+ * RedisCluster与其他类的关系如下
+ * RedisCluster
+ *      |
+ *      |-------serverLists
+ *                  |--------------RedisMSServer(0)-------
+ *                  |--------------     ...          |---------RedisClient(Master)
+ *                  |--------------     ...          |
+ *                  |--------------     ...          |---------RedisClient(Slave)
+ *                  |--------------     ...
+ *                  |--------------     ...
+ *                  |--------------     ...
+ *                  |--------------RedisMSServer(N)
+ *
  * Created by liuyl on 2016/12/20.
  */
 public class RedisCluster implements BasicRedisClient {
 
+    //采用一致性哈希来将端口实例划分,该值是一致性哈希的最大右边界
     public static final int CONSIST_NUM = 1024;
+
     private List<? extends RedisMSServer> serverLists;
 
     private ExecutorService executorService = Executors.newCachedThreadPool();
 
+    /**
+     * 程序结束时使用关闭连接池
+     */
     public void destory() {
         executorService.shutdown();
 
@@ -33,7 +51,7 @@ public class RedisCluster implements BasicRedisClient {
             try{
                 shutDownSuccess = executorService.awaitTermination(1, TimeUnit.SECONDS);
             } catch (InterruptedException e){
-                UniversalLogger.error("redis cluster shutdown interrupted", e);
+                UniversalLogger.error("redis cluster destory interrupted", e);
             }
         }
     }
@@ -42,6 +60,9 @@ public class RedisCluster implements BasicRedisClient {
         return serverLists;
     }
 
+    /**
+     * 初始化Redis集群,一般情况下,该serverList中的每一个Server都对应不同的端口
+     */
     public void setServerLists(List<? extends  RedisMSServer> serverLists){
         this.serverLists = serverLists;
         int step = CONSIST_NUM / serverLists.size();
@@ -71,12 +92,9 @@ public class RedisCluster implements BasicRedisClient {
         final CountDownLatch latch = new CountDownLatch(hashMap.size());
 
         for (final Map.Entry<Integer, List<String>> entry : hashMap.entrySet()) {
-            executorService.submit(new Runnable() {
-                @Override
-                public void run() {
-                    result.addAndGet(serverLists.get(entry.getKey()).getMaster().del(entry.getValue().toArray(new String[entry.getValue().size()])));
-                    latch.countDown();
-                }
+            executorService.submit(() -> {
+                result.addAndGet(serverLists.get(entry.getKey()).getMaster().del(entry.getValue().toArray(new String[entry.getValue().size()])));
+                latch.countDown();
             });
         }
 
@@ -500,6 +518,9 @@ public class RedisCluster implements BasicRedisClient {
         return null;
     }
 
+    /**
+     * 查看该key落到哪个redis端口上
+     */
     public RedisMSServer getServer(String key) {
         int num = getHashNum(key);
 
@@ -512,6 +533,10 @@ public class RedisCluster implements BasicRedisClient {
         return null;
     }
 
+    /**
+     * 查看keys落到哪些redis端口上
+     * @return key->redis端口,value->keys
+     */
     private Map<Integer, List<String>> getHashMap(String... keys) {
         Map<Integer, List<String>> hashMap = new HashMap<Integer, List<String>>();
         for (String key : keys) {

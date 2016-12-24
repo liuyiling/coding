@@ -9,15 +9,16 @@ import java.util.Random;
 
 /**
  * 管理某个具体端口(例:6379)的一组多从模式的redis集群
- * <p>
  * 该集群遵循以下原则:
  * 1.写数据时仅写入master,读数据时优先从slave读,slave不可用读时根据具体的配置决定是否从master中读
  * 2.该集群中至少需要有一个master,任意个slave
  * 3.提供getFromMaster等从master直接读数据的方法,用于master-slave同步延迟无法适应的cas场景,例如get,process,set
+ *
  * Created by liuyl on 2016/12/20.
  */
 public class RedisMSServer {
 
+    //复制key哈希值在该范围内的读写处理
     private long hashMin = -1L;
     private long hashMax = -1L;
     private RedisClient master; //一个master

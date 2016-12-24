@@ -3,6 +3,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
+ * Redis框架的使用方式-Demo示例
  * Created by liuyl on 2016/12/23.
  */
 public class RedisUseDemo {

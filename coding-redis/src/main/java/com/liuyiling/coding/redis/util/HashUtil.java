@@ -33,7 +33,7 @@ public class HashUtil {
     }
 
     /**
-     * 使用 Threadlocal是为了减少大并发场景下new 对象过多
+     * 使用 Threadlocal是为了减少大并发场景下声明的对象过多
      * @param key
      * @return
      */
