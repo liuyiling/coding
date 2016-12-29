@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>coding-bootstrap</artifactId>
+    <artifactId>coding-mysql</artifactId>
 
 
 </project>

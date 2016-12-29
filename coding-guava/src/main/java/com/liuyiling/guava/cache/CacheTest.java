@@ -153,7 +153,7 @@ public class CacheTest {
     public static void main(String[] agrs) {
         CacheTest cacheTest = new CacheTest();
         try {
-            cacheTest.test2();
+            cacheTest.test1();
         } catch (Exception e) {
             e.printStackTrace();
         }
