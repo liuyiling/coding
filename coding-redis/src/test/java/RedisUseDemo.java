@@ -16,7 +16,4 @@ public class RedisUseDemo {
         String foo = redisCluster.get("foo", String.class);
         System.out.println(foo);
     }
-
-
-
 }

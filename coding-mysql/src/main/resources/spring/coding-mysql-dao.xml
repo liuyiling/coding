@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+<beans>
+    <import resource="classpath:spring/coding-mysql.xml"/>
+
+    <bean id="bookTableContainer" class="com.liuyiling.coding.mysql.table.TableContainer">
+        <property name="tableItems">
+            <map>
+                <entry key="chinese_book_table_item" value-ref="chinese_book_tableItem"/>
+                <entry key="foreign_book_table_item" value-ref="foreign_book_tableItem"/>
+            </map>
+        </property>
+    </bean>
+
+    <!-- 配置具体的Dao类-->
+    <bean id="bookDao" class="com.liuyiling.coding.mysql.example.BookDaoImpl">
+        <property name="tableContainer" ref="bookTableContainer"/>
+    </bean>
+
+    <bean id="orderTableContainer" class="com.liuyiling.coding.mysql.table.TableContainer">
+        <property name="tableItems">
+            <map>
+                <entry key="order_table_item" value-ref="order_tableItem"/>
+                <entry key="finished_order_table_item" value-ref="finished_order_tableItem"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="orderDao" class="com.liuyiling.coding.mysql.example.OrderDaoImpl">
+        <property name="tableContainer" ref="orderTableContainer"/>
+    </bean>
+
+</beans>

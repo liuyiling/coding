@@ -3,8 +3,7 @@ package com.liuyiling.coding.mysql.table;
 import com.liuyiling.coding.mysql.jdbc.JdbcTemplate;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -17,8 +16,8 @@ public class TableContainer {
     private static Map<String, TableChannel> channelMap = new ConcurrentHashMap<>();
     private static AtomicLong atomicLong = new AtomicLong(15);
 
-    public TableItem getTableItem(String tableItemName){
-        if(CollectionUtils.isEmpty(tableItems)){
+    public TableItem getTableItem(String tableItemName) {
+        if (CollectionUtils.isEmpty(tableItems)) {
             return tableItems.get(tableItemName);
         }
         return null;
@@ -26,7 +25,6 @@ public class TableContainer {
 
     public TableChannel getDefaultTableChannel(String tableItemName, String sqlName) {
         TableItem tableItem = this.getTableItem(tableItemName);
-
 
         String tableFullName = tableItem.getTableNamePrefix();
         String dbFullName = tableItem.getDbNamePrefix();
@@ -51,8 +49,8 @@ public class TableContainer {
         String tableFullName = TableItemHelper.getTableName(tableItem, date);
         String dbFullName = TableItemHelper.getDbName(tableItem, dbStrategyId);
         String sqlKey = TableItemHelper.getSqlKey(dbFullName, tableFullName, sqlName);
-        TableChannel channel = (TableChannel)channelMap.get(sqlKey);
-        if(channel == null) {
+        TableChannel channel = (TableChannel) channelMap.get(sqlKey);
+        if (channel == null) {
             channel = new TableChannel();
             JdbcTemplate template = TableItemHelper.getJdbcTemplate(tableItem, dbStrategyId);
             String sql = TableItemHelper.getSql(tableItem, sqlName, dbStrategyId, date);
@@ -66,7 +64,7 @@ public class TableContainer {
         return channel;
     }
 
-    public TableChannel getTableChannel(String tableItemName, String sqlName, Long dbStrategyId, Long tableStrategyId){
+    public TableChannel getTableChannel(String tableItemName, String sqlName, Long dbStrategyId, Long tableStrategyId) {
         TableItem tableItem = getTableItem(tableItemName);
 
         String tableFullName = TableItemHelper.getTableName(tableItem, tableStrategyId);
@@ -74,7 +72,7 @@ public class TableContainer {
         String sqlKey = TableItemHelper.getSqlKey(dbFullName, tableFullName, sqlName);
 
         TableChannel channel = channelMap.get(sqlKey);
-        if(channel == null){
+        if (channel == null) {
             channel = new TableChannel();
             JdbcTemplate template = TableItemHelper.getJdbcTemplate(tableItem, dbStrategyId);
             String sql = TableItemHelper.getSql(tableItem, sqlName, dbStrategyId, tableStrategyId);
@@ -87,6 +85,58 @@ public class TableContainer {
         return channel;
     }
 
+    public List<TableChannel> getAllTableChannel(String tableItemName, String sqlName) {
+        TableItem tableItem = this.getTableItem(tableItemName);
+
+        int dbCount = tableItem.getDbCount();
+
+        //某一个库该tableItem所有的表, 如["table_0",...,"table_12"]
+        List<String> tableFullNameList = TableItemHelper.getAllTableNameInOneDatabase(tableItem);
+        Map<Integer, String> dbIndexAndNameMap = TableItemHelper.getAllDbIndexAndNameMap(tableItem);
+
+        JdbcTemplate[] jdbcTemplates = tableItem.getJdbcTemplates();
+        if (jdbcTemplates == null) {
+            return null;
+        }
 
 
+        List<TableChannel> tableChannels = new ArrayList<TableChannel>();
+        int jdbcTemplateSize = jdbcTemplates.length;
+
+        Iterator<Map.Entry<Integer, String>> dbNameIterator = dbIndexAndNameMap.entrySet().iterator();
+
+        while (dbNameIterator.hasNext()) {
+            Map.Entry<Integer, String> next = dbNameIterator.next();
+            int dbIndex = next.getKey();
+            String dbFullName = next.getValue();
+
+            JdbcTemplate jdbcTemplate = jdbcTemplates[dbIndex / (dbCount / jdbcTemplateSize)];
+
+            for (String tableFullName : tableFullNameList) {
+                String sqlKey = TableItemHelper.getSqlKey(dbFullName, tableFullName, sqlName);
+
+                TableChannel tableChannel = channelMap.get(sqlKey);
+                if (tableChannel == null) {
+                    tableChannel = new TableChannel();
+                    String sql = TableItemHelper.getSql(tableItem, sqlName, dbFullName, tableFullName);
+                    tableChannel.setSql(sql);
+                    tableChannel.setJdbcTemplate(jdbcTemplate);
+                    tableChannel.setId(atomicLong.incrementAndGet() + System.currentTimeMillis());
+                    channelMap.put(sqlKey, tableChannel);
+                }
+                tableChannels.add(tableChannel);
+            }
+
+        }
+        return tableChannels;
+    }
+
+
+    public Map<String, TableItem> getTableItems() {
+        return tableItems;
+    }
+
+    public void setTableItems(Map<String, TableItem> tableItems) {
+        this.tableItems = tableItems;
+    }
 }

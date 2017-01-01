@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://api.coding.com/schema/coding"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://api.coding.com/schema/coding">
+
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:import namespace="http://www.springframework.org/schema/beans" />
+
+    <!-- base types -->
+    <xsd:complexType name="identifiedType" abstract="true">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+	The unique identifier for a bean. The scope of the identifier
+	is the enclosing bean factory.
+			]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:attribute name="id" type="xsd:ID">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[
+	The unique identifier for a bean.
+				]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:element name="value">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+	Contains a string representation of a property value.
+	The property may be a string, or may be converted to the required
+	type using the JavaBeans PropertyEditor machinery. This makes it
+	possible for application developers to write custom PropertyEditor
+	implementations that can convert strings to arbitrary target objects.
+
+	Note that this is recommended for simple objects only. Configure
+	more complex objects by populating JavaBean properties with
+	references to other beans.
+			]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType mixed="true">
+            <xsd:choice minOccurs="0" maxOccurs="unbounded" />
+            <xsd:attribute name="type" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation><![CDATA[
+	The exact type that the value should be converted to. Only needed
+	if the type of the target property or constructor argument is
+	too generic: for example, in case of a collection element.
+					]]></xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:complexType name="propertyType">
+        <xsd:sequence>
+            <xsd:choice minOccurs="0" maxOccurs="1">
+                <xsd:element ref="value" />
+                <xsd:any namespace="##other" processContents="strict" />
+            </xsd:choice>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string" use="required">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[
+	The name of the property, following JavaBean naming conventions.
+				]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="value" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[
+	A short-cut alternative to a nested "<value>...</value>" element.
+				]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:element name="property" type="propertyType">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+	Bean definitions can have zero or more properties.
+	Property elements correspond to JavaBean setter methods exposed
+	by the bean classes. Spring supports primitives, references to other
+	beans in the same or related factories, lists, maps and properties.
+			]]></xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+
+    <xsd:group name="typeProperties">
+        <xsd:sequence>
+            <xsd:choice minOccurs="0" maxOccurs="unbounded">
+                <xsd:element ref="property" />
+                <xsd:any namespace="##other" processContents="strict"
+                         minOccurs="0" maxOccurs="unbounded" />
+            </xsd:choice>
+        </xsd:sequence>
+    </xsd:group>
+
+    <xsd:attributeGroup name="typeAttributes">
+        <xsd:attribute name="name" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[
+	Can be used to create one or more aliases illegal in an (XML) id.
+	Multiple aliases can be separated by any number of spaces, commas,
+	or semi-colons (or indeed any mixture of the three).
+				]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="parent" type="xsd:string">
+        </xsd:attribute>
+        <xsd:attribute name="lazy-init" type="xsd:boolean">
+        </xsd:attribute>
+        <xsd:attribute name="cacheInstance" type="xsd:boolean">
+            <xsd:annotation>
+                <xsd:documentation><![CDATA[
+				是否缓存实例，避免创建重复的对象 
+				]]></xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:anyAttribute namespace="##other"
+                          processContents="lax" />
+    </xsd:attributeGroup>
+
+
+    <xsd:simpleType name="mcStrategyEnumType">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+				配置策略，详见 com.coding.platform.commons.spring.MCClientFactoryBean
+				]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:normalizedString">
+            <xsd:enumeration value="normal_mc" />
+            <xsd:enumeration value="counter_mc" />
+            <xsd:enumeration value="mcq" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="mcHashAlgEnumType">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+				配置策略，详见 com.coding.platform.commons.spring.MCClientFactoryBean
+				]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:normalizedString">
+            <xsd:enumeration value="native_hash" />
+            <xsd:enumeration value="old_compat_hash" />
+            <xsd:enumeration value="new_compat_hash" />
+            <xsd:enumeration value="consistent_hash" />
+            <xsd:enumeration value="php_consistent_hash" />
+            <xsd:enumeration value="php_d_consistent_hash" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="mysqlStrategyEnumType">
+        <xsd:annotation>
+            <xsd:documentation>配置策略，详见
+                com.coding.platform.commons.spring.MysqlClientFactoryBean
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:normalizedString">
+            <xsd:enumeration value="master" />
+            <xsd:enumeration value="slave" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="mcType">
+        <xsd:complexContent>
+            <xsd:extension base="identifiedType">
+                <xsd:group ref="typeProperties" />
+                <xsd:attributeGroup ref="typeAttributes" />
+                <xsd:attribute name="serverPort" type="xsd:string"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="minSpareConnections" type="xsd:int"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="maxSpareConnections" type="xsd:int"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="compressEnable" type="xsd:boolean" use="optional"/>
+                <xsd:attribute name="compressType" type="xsd:string"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="consistentHashEnable" type="xsd:boolean"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="primitiveAsString" type="xsd:boolean"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="failover" type="xsd:boolean" use="optional"></xsd:attribute>
+                <xsd:attribute name="strategy" type="mcStrategyEnumType"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="maxBusyTime" type="xsd:long" use="optional"></xsd:attribute>
+                <xsd:attribute name="socketTimeOut" type="xsd:int"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="socketConnectTimeOut" type="xsd:int"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="enableSwitcher" type="xsd:boolean"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="hashingAlg" type="mcHashAlgEnumType"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="sanitizeKeys" type="xsd:boolean"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="phpSerialize" type="xsd:boolean" use="optional"/>
+                <xsd:attribute name="flagType" type="xsd:string" use="optional"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="mcListType">
+        <xsd:complexContent>
+            <xsd:extension base="identifiedType">
+                <xsd:group ref="typeProperties" />
+                <xsd:attributeGroup ref="typeAttributes" />
+                <xsd:attribute name="serverPorts" type="xsd:string"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="strategy" type="mcStrategyEnumType"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="targetListClass" type="xsd:string"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="minSpareConnections" type="xsd:int"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="maxSpareConnections" type="xsd:int"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="compressEnable" type="xsd:boolean"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="consistentHashEnable" type="xsd:boolean"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="primitiveAsString" type="xsd:boolean"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="failover" type="xsd:boolean" use="optional"></xsd:attribute>
+                <xsd:attribute name="maxBusyTime" type="xsd:long" use="optional"></xsd:attribute>
+                <xsd:attribute name="socketTimeOut" type="xsd:int"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="socketConnectTimeOut" type="xsd:int"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="enableSwitcher" type="xsd:boolean"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="hashingAlg" type="mcHashAlgEnumType"
+                               use="optional"></xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="mysqlType">
+        <xsd:complexContent>
+            <xsd:extension base="identifiedType">
+                <xsd:group ref="typeProperties" />
+                <xsd:attributeGroup ref="typeAttributes" />
+                <xsd:attribute name="jdbcUrl" type="xsd:string" use="optional"></xsd:attribute>
+                <xsd:attribute name="user" type="xsd:string" use="optional"></xsd:attribute>
+                <xsd:attribute name="password" type="xsd:string" use="optional"></xsd:attribute>
+                <xsd:attribute name="minPoolSize" type="xsd:int" use="optional"></xsd:attribute>
+                <xsd:attribute name="maxPoolSize" type="xsd:int" use="optional"></xsd:attribute>
+                <xsd:attribute name="idleConnectionTestPeriod" type="xsd:int"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="maxIdleTime" type="xsd:int" use="optional"></xsd:attribute>
+                <xsd:attribute name="breakAfterAcquireFailure" type="xsd:boolean"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="checkoutTimeout" type="xsd:int"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="acquireRetryAttempts" type="xsd:int"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="acquireRetryDelay" type="xsd:int"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="maxConnectionAge" type="xsd:int"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="strategy" type="mysqlStrategyEnumType"
+                               use="optional"></xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="csType">
+        <xsd:complexContent>
+            <xsd:extension base="identifiedType">
+                <xsd:group ref="typeProperties" />
+                <xsd:attributeGroup ref="typeAttributes" />
+                <xsd:attribute name="primitiveAsString" type="xsd:boolean"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="group" type="xsd:string" use="optional"></xsd:attribute>
+                <xsd:attribute name="namespace" type="xsd:string" use="required"></xsd:attribute>
+                <xsd:attribute name="useMotanMcClient" type="xsd:boolean"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="check" type="xsd:boolean" use="optional"></xsd:attribute>
+                <xsd:attribute name="throwException" type="xsd:boolean"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="retries" type="xsd:int" use="optional"></xsd:attribute>
+                <xsd:attribute name="requestTimeout" type="xsd:int"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="directUrl" type="xsd:string" use="optional"></xsd:attribute>
+                <xsd:attribute name="minSpareConnections" type="xsd:int"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="maxSpareConnections" type="xsd:int"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="maxBusyTime" type="xsd:int" use="optional"></xsd:attribute>
+                <xsd:attribute name="socketTimeOut" type="xsd:int"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="socketConnectTimeOut" type="xsd:int"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="consistentHashEnable" type="xsd:boolean"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="backup" type="xsd:string" use="optional" />
+                <xsd:attribute name="recovery" type="xsd:string" use="optional" />
+                <xsd:attribute name="registry" type="xsd:string" use="optional" />
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="csTemplateType">
+        <xsd:complexContent>
+            <xsd:extension base="identifiedType">
+                <xsd:group ref="typeProperties" />
+                <xsd:attributeGroup ref="typeAttributes" />
+                <xsd:attribute name="primitiveAsString" type="xsd:boolean"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="group" type="xsd:string" use="optional"></xsd:attribute>
+                <xsd:attribute name="namespace" type="xsd:string" use="required"></xsd:attribute>
+                <xsd:attribute name="useMotanMcClient" type="xsd:boolean"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="check" type="xsd:boolean" use="optional"></xsd:attribute>
+                <xsd:attribute name="throwException" type="xsd:boolean"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="retries" type="xsd:int" use="optional"></xsd:attribute>
+                <xsd:attribute name="requestTimeout" type="xsd:int"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="directUrl" type="xsd:string" use="optional"></xsd:attribute>
+                <xsd:attribute name="minSpareConnections" type="xsd:int"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="maxSpareConnections" type="xsd:int"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="maxBusyTime" type="xsd:int" use="optional"></xsd:attribute>
+                <xsd:attribute name="socketTimeOut" type="xsd:int"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="socketConnectTimeOut" type="xsd:int"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="consistentHashEnable" type="xsd:boolean"
+                               use="optional"></xsd:attribute>
+                <xsd:attribute name="backup" type="xsd:string" use="optional" />
+                <xsd:attribute name="recovery" type="xsd:string" use="optional" />
+                <xsd:attribute name="registry" type="xsd:string" use="optional" />
+                <xsd:attribute name="expire" type="xsd:int" use="optional" />
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:element name="mc" type="mcType">
+    </xsd:element>
+
+    <xsd:element name="mclist" type="mcListType">
+    </xsd:element>
+
+    <xsd:element name="mysql" type="mysqlType">
+    </xsd:element>
+
+    <xsd:element name="cs" type="csType">
+    </xsd:element>
+
+    <xsd:element name="cstemplate" type="csTemplateType">
+    </xsd:element>
+
+    <!-- <xsd:element name="mcstorage"> <xsd:annotation> <xsd:documentation><![CDATA[ 
+        mc storage ]]></xsd:documentation> </xsd:annotation> <xsd:complexType> <xsd:sequence> 
+        <xsd:element name="master" type="mc"></xsd:element> <xsd:element name="slave" 
+        type="mc"></xsd:element> </xsd:sequence> <xsd:attribute name="id" type="xsd:ID"> 
+        <xsd:annotation> <xsd:documentation><![CDATA[ The unique identifier for a 
+        bean. ]]></xsd:documentation> </xsd:annotation> </xsd:attribute> <xsd:attribute 
+        name="name" type="xsd:string" use="required"> <xsd:annotation> <xsd:documentation><![CDATA[ 
+        The application name. ]]></xsd:documentation> </xsd:annotation> </xsd:attribute> 
+        </xsd:complexType> </xsd:element> -->
+
+</xsd:schema>
