@@ -2,7 +2,14 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
 <beans>
     <import resource="classpath:spring/coding-mysql.xml"/>
+    <import resource="classpath:spring/coding-mysql-order.xml"/>
 
+    <!-- 通过配置文件扫描获取详细的配置信息 -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location">
+            <value>mysql-test.properties</value>
+        </property>
+    </bean>
     <bean id="bookTableContainer" class="com.liuyiling.coding.mysql.table.TableContainer">
         <property name="tableItems">
             <map>

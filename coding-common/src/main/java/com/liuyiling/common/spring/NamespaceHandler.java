@@ -9,7 +9,7 @@ public class NamespaceHandler extends NamespaceHandlerSupport {
 	 */
 	@Override
 	public void init() {
-		registerBeanDefinitionParser("mysql", new MeituBeanDefinitionParser(MysqlClientFactoryBean.class));
+		registerBeanDefinitionParser("mysql", new BeanDefinitionParser(MysqlClientFactoryBean.class));
 	}
 
 }

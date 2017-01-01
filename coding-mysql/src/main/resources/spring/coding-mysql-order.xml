@@ -10,6 +10,7 @@
     <!-- template列表初始化-->
     <util:list id="jdbcTemplateList">
         <ref bean="jdbctemplate_0"/>
+        <ref bean="jdbctemplate_1"/>
     </util:list>
 
     <bean id="jdbctemplate_0" class="com.liuyiling.coding.mysql.jdbc.JdbcTemplate">
@@ -21,12 +22,28 @@
         </property>
     </bean>
 
+    <bean id="jdbctemplate_1" class="com.liuyiling.coding.mysql.jdbc.JdbcTemplate">
+        <property name="master" ref="datasources_1_m"/>
+        <property name="slavers">
+            <list>
+                <ref bean="datasources_1_s"/>
+            </list>
+        </property>
+    </bean>
+
     <!-- master/slave配置-->
     <coding:mysql id="datasources_0_m" parent="masterBaseDataSource" strategy="master">
         <property name="jdbcUrl" value="${mysql.0.master}"/>
     </coding:mysql>
     <coding:mysql id="datasources_0_s" parent="slaveBaseDataSource" strategy="slave">
         <property name="jdbcUrl" value="${mysql.0.slave}"/>
+    </coding:mysql>
+
+    <coding:mysql id="datasources_1_m" parent="masterBaseDataSource" strategy="master">
+        <property name="jdbcUrl" value="${mysql.1.master}"/>
+    </coding:mysql>
+    <coding:mysql id="datasources_1_s" parent="slaveBaseDataSource" strategy="slave">
+        <property name="jdbcUrl" value="${mysql.1.slave}"/>
     </coding:mysql>
 
     <!-- 初始化mysql默认配置-->
@@ -58,35 +75,36 @@
         <property name="password" value="${mysql.slave.password}"/>
     </bean>
 
-    <!-- 没有水平切割的表结构定义-->
-    <bean id="chinese_book_tableItem" class="com.liuyiling.coding.mysql.table.TableItem">
-        <property name="itemName" value="book"/>
-        <property name="dbNamePrefix" value="${mysql.book.databaseName}"/>
-        <property name="dbCount" value="1"/>
-        <property name="tableNamePrefix" value="chinese_book"/>
-        <property name="tableCount" value="1"/>
-        <property name="sqls" ref="book_sqlMap"/>
-        <property name="jdbcTemplates" ref="jdbcTemplateList"/>
+    <!--分库且分表-->
+    <bean id="order_tableItem" class="com.liuyiling.coding.mysql.table.TableItem">
+        <property name="itemName" value="order" />
+        <property name="dbNamePrefix" value="${mysql.order.databaseName}" />
+        <property name="dbCount" value="2" />
+        <property name="tableNamePrefix" value="order" />
+        <property name="tableNamePostFix" value="index" />
+        <property name="tableCount" value="8" />
+        <property name="sqls" ref="order_sqlMap" />
+        <property name="jdbcTemplates" ref="jdbcTemplateList" />
     </bean>
 
-    <bean id="foreign_book_tableItem" class="com.liuyiling.coding.mysql.table.TableItem">
-        <property name="itemName" value="book"/>
-        <property name="dbNamePrefix" value="${mysql.book.databaseName}"/>
-        <property name="dbCount" value="1"/>
-        <property name="tableNamePrefix" value="foreign_book"/>
-        <property name="tableCount" value="1"/>
-        <property name="sqls" ref="book_sqlMap"/>
-        <property name="jdbcTemplates" ref="jdbcTemplateList"/>
+    <!--不分库但是按月分表-->
+    <bean id="finished_order_tableItem" class="com.liuyiling.coding.mysql.table.TableItem">
+        <property name="itemName" value="order" />
+        <property name="dbNamePrefix" value="${mysql.order.databaseName}" />
+        <property name="dbCount" value="1" />
+        <property name="tableNamePrefix" value="finished_order" />
+        <property name="tableNamePostFix" value="yymm" />
+        <property name="sqls" ref="order_sqlMap" />
+        <property name="jdbcTemplates" ref="jdbcTemplateList" />
     </bean>
 
-    <!-- 存放book操作的SQL语句-->
-    <util:map id="book_sqlMap">
-        <!--value="insert into $db$.$tb$ (book_name, book_type, book_params, book_time, book_language) values(?,?,?,?,?) on duplicate key update end_id=?, size=?,content=?"/>-->
-        <entry key="INSERT_BOOK" value="insert into $db$.$tb$ (book_name, book_type, book_params, book_time, book_language) values(?,?,?,?,?)"/>
-        <entry key="DEL_BOOK_BY_ID" value="delete from $db$.$tb$ where id=?"/>
-        <entry key="GET_BOOK_BY_NAME" value="select * from $db$.$tb$ where book_name=?"/>
-        <entry key="GET_BOOKS_BY_TYPE" value="select * from $db$.$tb$ where book_type=?"/>
-        <entry key="UPDATE_BOOK_TYPE_BY_ID" value="update $db$.$tb$ set book_type = ? where book_id=?"/>
+    <!-- 存放order操作的SQL语句-->
+    <util:map id="order_sqlMap">
+        <entry key="INSERT_ORDER" value="insert into $db$.$tb$ (book_id, uid) values(?,?)"/>
+        <entry key="GET_ORDERS_BY_UID" value="select * from $db$.$tb$ uid = ?"/>
+        <entry key="GET_ALL_ORDER" value="select * from $db$.$tb$"/>
     </util:map>
+
+
 
 </beans>

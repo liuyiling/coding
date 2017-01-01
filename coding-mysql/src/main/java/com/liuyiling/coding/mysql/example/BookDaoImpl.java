@@ -45,7 +45,7 @@ public class BookDaoImpl extends BaseDaoImpl {
             ps.setInt(2, book.getBookType());
             ps.setObject(3, book.getBookParams());
             ps.setObject(4, book.getBookTime());
-            ps.setInt(4, book.getBookLanguage());
+            ps.setInt(5, book.getBookLanguage());
 
             return ps;
         }, keyHolder);

@@ -10,7 +10,7 @@ import org.w3c.dom.*;
 /**
  * Created by liuyl on 2017/1/1.
  */
-public class MeituBeanDefinitionParser extends AbstractSimpleBeanDefinitionParser {
+public class BeanDefinitionParser extends AbstractSimpleBeanDefinitionParser {
 
     private static final String PROPERTY_ELEMENT = "property";
     private static final String VALUE_ELEMENT = "value";
@@ -23,7 +23,7 @@ public class MeituBeanDefinitionParser extends AbstractSimpleBeanDefinitionParse
 
     private Class<? extends FactoryBean<?>> factoryBeanClass;
 
-    public MeituBeanDefinitionParser(Class<? extends FactoryBean<?>> factoryBeanClass) {
+    public BeanDefinitionParser(Class<? extends FactoryBean<?>> factoryBeanClass) {
         this.factoryBeanClass = factoryBeanClass;
     }
 

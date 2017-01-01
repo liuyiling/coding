@@ -17,7 +17,7 @@ public class TableContainer {
     private static AtomicLong atomicLong = new AtomicLong(15);
 
     public TableItem getTableItem(String tableItemName) {
-        if (CollectionUtils.isEmpty(tableItems)) {
+        if (!CollectionUtils.isEmpty(tableItems)) {
             return tableItems.get(tableItemName);
         }
         return null;

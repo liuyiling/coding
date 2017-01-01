@@ -1,7 +1,4 @@
-import com.liuyiling.coding.mysql.example.Book;
-import com.liuyiling.coding.mysql.example.BookDaoImpl;
-import com.liuyiling.coding.mysql.example.BookLanguage;
-import com.liuyiling.coding.mysql.example.OrderDaoImpl;
+import com.liuyiling.coding.mysql.example.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -18,9 +15,15 @@ public class MysqlUseDemo {
 
     public static void main(String[] agrs){
 
-        Book book = new Book("book_name_1", 1, "book_params".toCharArray(), new Date(), BookLanguage.CHINESE.value());
-        bookDao.insertBook(book);
+        Book book = new Book("book_name_1", 1, "book_params", new Date(), BookLanguage.CHINESE.value());
+        //long id = bookDao.insertBook(book);
+        //bookDao.getChineseBookByName("book_name_1");
+        //bookDao.getChineseBooksByType(1);
+        //bookDao.delChineseBook(id);
 
+        Order order = new Order(1, 1, 1);
+        orderDao.insertOrder(order);
+        orderDao.insertFinishedOrder(order);
 
 
     }
