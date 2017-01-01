@@ -352,14 +352,4 @@
     <xsd:element name="cstemplate" type="csTemplateType">
     </xsd:element>
 
-    <!-- <xsd:element name="mcstorage"> <xsd:annotation> <xsd:documentation><![CDATA[ 
-        mc storage ]]></xsd:documentation> </xsd:annotation> <xsd:complexType> <xsd:sequence> 
-        <xsd:element name="master" type="mc"></xsd:element> <xsd:element name="slave" 
-        type="mc"></xsd:element> </xsd:sequence> <xsd:attribute name="id" type="xsd:ID"> 
-        <xsd:annotation> <xsd:documentation><![CDATA[ The unique identifier for a 
-        bean. ]]></xsd:documentation> </xsd:annotation> </xsd:attribute> <xsd:attribute 
-        name="name" type="xsd:string" use="required"> <xsd:annotation> <xsd:documentation><![CDATA[ 
-        The application name. ]]></xsd:documentation> </xsd:annotation> </xsd:attribute> 
-        </xsd:complexType> </xsd:element> -->
-
 </xsd:schema>
