@@ -29,6 +29,7 @@
         <module>coding-grpc</module>
         <module>coding-redis</module>
         <module>coding-mysql</module>
+        <module>coding-otherThing</module>
     </modules>
 
     <!-- maven中默认的版本配置-->

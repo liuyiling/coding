@@ -8,9 +8,13 @@
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
     <!-- template列表初始化-->
-    <util:list id="jdbcTemplateList">
+    <util:list id="orderJdbcTemplateList">
         <ref bean="jdbctemplate_0"/>
         <ref bean="jdbctemplate_1"/>
+    </util:list>
+
+    <util:list id="finishedOrderjdbcTemplateList">
+        <ref bean="jdbctemplate_0"/>
     </util:list>
 
     <bean id="jdbctemplate_0" class="com.liuyiling.coding.mysql.jdbc.JdbcTemplate">
@@ -84,18 +88,18 @@
         <property name="tableNamePostFix" value="index" />
         <property name="tableCount" value="8" />
         <property name="sqls" ref="order_sqlMap" />
-        <property name="jdbcTemplates" ref="jdbcTemplateList" />
+        <property name="jdbcTemplates" ref="orderJdbcTemplateList" />
     </bean>
 
     <!--不分库但是按月分表-->
     <bean id="finished_order_tableItem" class="com.liuyiling.coding.mysql.table.TableItem">
-        <property name="itemName" value="order" />
+        <property name="itemName" value="finished_order" />
         <property name="dbNamePrefix" value="${mysql.order.databaseName}" />
         <property name="dbCount" value="1" />
         <property name="tableNamePrefix" value="finished_order" />
         <property name="tableNamePostFix" value="yymm" />
         <property name="sqls" ref="order_sqlMap" />
-        <property name="jdbcTemplates" ref="jdbcTemplateList" />
+        <property name="jdbcTemplates" ref="finishedOrderjdbcTemplateList" />
     </bean>
 
     <!-- 存放order操作的SQL语句-->

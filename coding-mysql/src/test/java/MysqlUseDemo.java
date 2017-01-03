@@ -21,9 +21,10 @@ public class MysqlUseDemo {
         //bookDao.getChineseBooksByType(1);
         //bookDao.delChineseBook(id);
 
-        Order order = new Order(1, 1, 1);
+        Order order = new Order(3, 3, 3);
         orderDao.insertOrder(order);
-        orderDao.insertFinishedOrder(order);
+        //orderDao.insertFinishedOrder(order);
+        //orderDao.insertFinishedOrder(order);
 
 
     }
