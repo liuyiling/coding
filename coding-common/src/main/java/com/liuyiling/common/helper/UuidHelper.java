@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Created by liuyl on 2016/12/29.
+ * Created by liuylw on 2016/12/29.
  */
 public class UuidHelper {
 
