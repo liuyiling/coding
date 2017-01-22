@@ -1,3 +1,5 @@
+import com.alibaba.fastjson.JSONObject;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +24,10 @@ public class ForwardServlet extends HttpServlet{
         if("jsp".equals(destination)){
             //struts等MVC框架的原理
             req.setAttribute("date",new Date());
+
+            JSONObject json = new JSONObject();
+            json.put("key", "value");
+            req.setAttribute("json", json.toJSONString());
 
             req.getRequestDispatcher("/forward.jsp").forward(req,resp);
 

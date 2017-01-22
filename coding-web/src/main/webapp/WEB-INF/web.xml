@@ -64,7 +64,7 @@
 
     <servlet-mapping>
         <servlet-name>ParamServlet</servlet-name>
-        <url-pattern>/servlet/ParamServlet</url-pattern>
+        <url-pattern>*.mp4</url-pattern>
     </servlet-mapping>
 
     <servlet>

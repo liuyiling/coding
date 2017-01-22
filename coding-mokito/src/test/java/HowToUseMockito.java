@@ -158,7 +158,7 @@ public class HowToUseMockito {
 
         User user = new User();
         user.setUserName("610");
-        //进入userDao.get打一个断点，观察是否进入
+        //进入userDao.get打一个断点，观察是否进∑入
         when(userDao.get(anyInt())).thenReturn(user);
 
         User result = userDao.get(610);
