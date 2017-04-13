@@ -6,7 +6,8 @@ import java.util.ArrayList;
  */
 public class ObserverPattern {
 
-    public static void main(String[] agrs){
+    public static void main(String[] agrs) {
+
 
         /**
          * 创建一个发布者"liuyiling"
@@ -35,7 +36,7 @@ public class ObserverPattern {
 /**
  * 发布者
  */
-class Publisher{
+class Publisher {
 
     private String name;
 
@@ -50,25 +51,27 @@ class Publisher{
 
     /**
      * 增加订阅者
+     *
      * @param subscribler
      */
-    public void addSubscribler(Subscribler subscribler){
+    public void addSubscribler(Subscribler subscribler) {
         subscriblerList.add(subscribler);
     }
 
     /**
      * 删除订阅者
+     *
      * @param subscribler
      */
-    public void removerSubscribler(Subscribler subscribler){
+    public void removerSubscribler(Subscribler subscribler) {
         subscriblerList.remove(subscribler);
     }
 
     /**
      * 通知消息到订阅者
      */
-    public void notifySubsribler(){
-        for( Subscribler subscribler : subscriblerList){
+    public void notifySubsribler() {
+        for (Subscribler subscribler : subscriblerList) {
             subscribler.update(this);
         }
     }
@@ -82,7 +85,7 @@ class Publisher{
 /**
  * 具体的发布者实例
  */
-class ConcretePublisher extends Publisher{
+class ConcretePublisher extends Publisher {
 
     public ConcretePublisher(String name) {
         super(name);
@@ -92,14 +95,15 @@ class ConcretePublisher extends Publisher{
 
     /**
      * 状态发生变化的时候通知所有的订阅者
+     *
      * @param state
      */
-    public void changeState(String state){
+    public void changeState(String state) {
         this.state = state;
         notifySubsribler();
     }
 
-    public String getState(){
+    public String getState() {
         return this.state;
     }
 
@@ -108,11 +112,12 @@ class ConcretePublisher extends Publisher{
 /**
  * 订阅者
  */
-class Subscribler{
+class Subscribler {
 
     private String name;
 
-    public void update(Publisher publisher){}
+    public void update(Publisher publisher) {
+    }
 
     public Subscribler() {
     }
@@ -133,7 +138,7 @@ class Subscribler{
 /**
  * 订阅者的具体实现
  */
-class ConcreteSubscribler extends Subscribler{
+class ConcreteSubscribler extends Subscribler {
 
 
     public ConcreteSubscribler(String name) {
