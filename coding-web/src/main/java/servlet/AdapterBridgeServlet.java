@@ -1,3 +1,5 @@
+package servlet;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -9,8 +11,9 @@ import java.net.URLEncoder;
 
 /**
  * Created by liuyl on 16/5/20.
+ * 用于跨域调试的时候转发Servlet请求
  */
-public class DyGraphServlet extends HttpServlet {
+public class AdapterBridgeServlet extends HttpServlet {
 
     public static final String GET_URL = "http://192.168.133.82:8891/data/get_stream_log_by_liveId?liveId=";
 

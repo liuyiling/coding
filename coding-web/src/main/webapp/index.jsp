@@ -91,7 +91,7 @@ html结合2
 
 
 <%-- 使用JavaBean对象的示例代码 --%>
-<%--<jsp:useBean id="person" class="Person" scope="page"></jsp:useBean>--%>
+<%--<jsp:useBean id="person" class="model.Person" scope="page"></jsp:useBean>--%>
 <%--<jsp:setProperty name="person" property="*"></jsp:setProperty>--%>
 <%--<jsp:getProperty name="person" property="name"></jsp:getProperty>--%>
 

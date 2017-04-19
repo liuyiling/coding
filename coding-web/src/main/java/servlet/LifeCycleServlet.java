@@ -1,3 +1,5 @@
+package servlet;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -47,7 +49,7 @@ public class LifeCycleServlet extends HttpServlet {
         PrintWriter out = resp.getWriter();
 
         out.println("<html>");
-        out.println("LifeCycleServlet");
+        out.println("servlet.LifeCycleServlet");
         out.println("</html>");
 
         out.flush();

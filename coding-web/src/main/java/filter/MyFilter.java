@@ -1,3 +1,5 @@
+package filter;
+
 import javax.servlet.*;
 import java.io.IOException;
 
@@ -10,18 +12,18 @@ public class MyFilter implements Filter{
     //web程序启动时调用这个方法
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        System.out.println("MyFilter 初始化");
+        System.out.println("filter.MyFilter 初始化");
     }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        System.out.println("MyFilter 开始");
+        System.out.println("filter.MyFilter 开始");
         filterChain.doFilter(servletRequest,servletResponse);
-        System.out.println("MyFilter 结束");
+        System.out.println("filter.MyFilter 结束");
     }
 
     @Override
     public void destroy() {
-        System.out.println("MyFilter 销毁");
+        System.out.println("filter.MyFilter 销毁");
     }
 }

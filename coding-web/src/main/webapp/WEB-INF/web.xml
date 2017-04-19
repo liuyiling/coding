@@ -15,31 +15,29 @@
 
     <!-- Listener 声明在 Servlet前面-->
     <listener>
-        <listener-class>MyListener</listener-class>
+        <listener-class>listener.MyListener</listener-class>
     </listener>
-
-
 
     <!-- 第一个servlet，用来上手和熟悉servlet的运行流程 -->
     <servlet>
         <servlet-name>FirstServlet</servlet-name>
-        <servlet-class>FirstServlet</servlet-class>
+        <servlet-class>servlet.FirstServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
         <servlet-name>FirstServlet</servlet-name>
-        <url-pattern>/servlet/FirstServlet</url-pattern>
+        <url-pattern>/servlet/servlet.FirstServlet</url-pattern>
     </servlet-mapping>
 
 
     <servlet>
         <servlet-name>DyGraphServlet</servlet-name>
-        <servlet-class>DyGraphServlet</servlet-class>
+        <servlet-class>servlet.AdapterBridgeServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
         <servlet-name>DyGraphServlet</servlet-name>
-        <url-pattern>/servlet/DyGraphServlet</url-pattern>
+        <url-pattern>/servlet/servlet.AdapterBridgeServlet</url-pattern>
     </servlet-mapping>
 
 
@@ -52,11 +50,15 @@
     <!-- sevlet获取参数的配置，还需要配合servlet.java 和 servlet-mapping-->
     <servlet>
         <servlet-name>ParamServlet</servlet-name>
-        <servlet-class>ParamServlet</servlet-class>
+        <servlet-class>servlet.ParamServlet</servlet-class>
         <!-- 初始化参数，非全局,全局资源见上-->
         <init-param>
             <param-name>initParamOne</param-name>
             <param-value>initParamOne</param-value>
+        </init-param>
+        <init-param>
+            <param-name>initParamTwo</param-name>
+            <param-value>initParamTwo</param-value>
         </init-param>
         <!-- 1表示tomcat启动的时候就加载，0为lazy-load-->
         <load-on-startup>1</load-on-startup>
@@ -64,12 +66,12 @@
 
     <servlet-mapping>
         <servlet-name>ParamServlet</servlet-name>
-        <url-pattern>*.mp4</url-pattern>
+        <url-pattern>/servlet/ParamServlet</url-pattern>
     </servlet-mapping>
 
     <servlet>
         <servlet-name>RequestDispatcherServlet</servlet-name>
-        <servlet-class>RequestDispatcherServlet</servlet-class>
+        <servlet-class>servlet.RequestDispatcherServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
@@ -79,7 +81,7 @@
 
     <servlet>
         <servlet-name>LifeCycleServlet</servlet-name>
-        <servlet-class>LifeCycleServlet</servlet-class>
+        <servlet-class>servlet.LifeCycleServlet</servlet-class>
         <init-param>
             <param-name>startPointer</param-name>
             <param-value>1600</param-value>
@@ -97,9 +99,10 @@
 
     <servlet>
         <servlet-name>ForwardServlet</servlet-name>
-        <servlet-class>ForwardServlet</servlet-class>
+        <servlet-class>servlet.ForwardServlet</servlet-class>
     </servlet>
 
+    <!-- 多个url-patter可以映射到同一个servlet-->
     <servlet-mapping>
         <servlet-name>ForwardServlet</servlet-name>
         <url-pattern>/servlet/ForwardServlet</url-pattern>
@@ -108,7 +111,7 @@
 
     <servlet>
         <servlet-name>RedirectServlet</servlet-name>
-        <servlet-class>RedirectServlet</servlet-class>
+        <servlet-class>servlet.RedirectServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
@@ -116,22 +119,46 @@
         <url-pattern>/servlet/RedirectServlet</url-pattern>
     </servlet-mapping>
 
-
     <servlet>
-        <servlet-name>DownloadServlet</servlet-name>
-        <servlet-class>DownloadServlet</servlet-class>
+        <servlet-name>RandomImageServlet</servlet-name>
+        <servlet-class>servlet.RandomImageServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>DownloadServlet</servlet-name>
-        <url-pattern>/servlet/DownloadServlet</url-pattern>
+        <servlet-name>RandomImageServlet</servlet-name>
+        <url-pattern>/servlet/RandomImageServlet</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>CheckServlet</servlet-name>
+        <servlet-class>servlet.CheckServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>CheckServlet</servlet-name>
+        <url-pattern>/servlet/CheckServlet</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>HttpHeaderUseByServlet</servlet-name>
+        <servlet-class>servlet.HttpHeaderUseByServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>HttpHeaderUseByServlet</servlet-name>
+        <url-pattern>/servlet/HttpHeaderUseByServlet</url-pattern>
+    </servlet-mapping>
 
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
 
+    <!-- 缺省Srvlet,当访问的Servlet不存在时,就是用默认的Servlet进行处理-->
+    <servlet-mapping>
+        <servlet-name>ForwardServlet</servlet-name>
+        <url-pattern>/servlet/*</url-pattern>
+    </servlet-mapping>
 
     <!-- 注意，一个web.xml中可以配置很多歌filter的，执行顺序和配置文件中的顺序相同
          多个filter之间可能会相互影响,请求经过filter的顺序
@@ -140,7 +167,7 @@
     <!-- filter的配置-->
     <filter>
         <filter-name>filterName</filter-name>
-        <filter-class>MyFilter</filter-class>
+        <filter-class>filter.MyFilter</filter-class>
         <init-param>
             <param-name>encoding</param-name>
             <param-value>UTF-8</param-value>
@@ -158,7 +185,7 @@
 
     <filter>
         <filter-name>charaterEncodingFilter</filter-name>
-        <filter-class>CharacterEncodingFilter</filter-class>
+        <filter-class>filter.CharacterEncodingFilter</filter-class>
         <init-param>
             <param-name>characterEncoding</param-name>
             <param-value>UTF-8</param-value>
@@ -177,7 +204,7 @@
 
     <filter>
         <filter-name>logFilter</filter-name>
-        <filter-class>LogFilter</filter-class>
+        <filter-class>filter.LogFilter</filter-class>
     </filter>
 
     <filter-mapping>

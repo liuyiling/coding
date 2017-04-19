@@ -1,3 +1,5 @@
+package listener;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -19,7 +21,7 @@ public class MyListener implements ServletRequestListener {
         String uri = request.getRequestURI();
 
         request.setAttribute("dateCreated",System.currentTimeMillis());
-        System.out.println("MyListener: IP: " + request.getRemoteAddr() + "请求：" + uri);
+        System.out.println("listener.MyListener: IP: " + request.getRemoteAddr() + "请求：" + uri);
     }
 
     @Override

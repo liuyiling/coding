@@ -1,3 +1,5 @@
+package filter;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -17,7 +19,7 @@ public class LogFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         filterName = filterConfig.getFilterName();
-        System.out.println("LogFilter 初始化");
+        System.out.println("filter.LogFilter 初始化");
     }
 
     @Override
@@ -28,7 +30,7 @@ public class LogFilter implements Filter {
         req.setCharacterEncoding("UTF-8");
         res.setCharacterEncoding("UTF-8");
 
-        System.out.println("LogFilter 执行");
+        System.out.println("filter.LogFilter 执行");
         long startTime = System.currentTimeMillis();
         String requestUri = req.getRequestURI();
 
@@ -38,11 +40,11 @@ public class LogFilter implements Filter {
         System.out.println(servletRequest.getRemoteAddr() + "访问了： " + requestUri + " 用时：" + (endTime - startTime));
 
 
-        System.out.println("LogFilter 结束");
+        System.out.println("filter.LogFilter 结束");
     }
 
     @Override
     public void destroy() {
-        System.out.println("LogFilter 销毁");
+        System.out.println("filter.LogFilter 销毁");
     }
 }
