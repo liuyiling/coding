@@ -9,14 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>coding-protocolBuffer</artifactId>
-    <dependencies>
-        <dependency>
-            <groupId>com.google.protobuf</groupId>
-            <artifactId>protobuf-java</artifactId>
-            <version>3.1.0</version>
-        </dependency>
-    </dependencies>
+    <artifactId>coding-cas</artifactId>
+    <packaging>war</packaging>
 
 
 </project>

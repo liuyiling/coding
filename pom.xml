@@ -25,12 +25,12 @@
         <module>coding-designpattern</module>
         <module>coding-flume</module>
         <module>coding-arithmetic</module>
-        <module>coding-protocolBuffer</module>
         <module>coding-grpc</module>
         <module>coding-redis</module>
         <module>coding-mysql</module>
         <module>coding-otherThing</module>
         <module>coding-framework</module>
+        <module>coding-cas</module>
     </modules>
 
     <!-- maven中默认的版本配置-->
