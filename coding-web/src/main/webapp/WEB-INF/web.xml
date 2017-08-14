@@ -167,7 +167,7 @@
     <!-- filter的配置-->
     <filter>
         <filter-name>filterName</filter-name>
-        <filter-class>filter.MyFilter</filter-class>
+        <filter-class>filter.ExampleFilter</filter-class>
         <init-param>
             <param-name>encoding</param-name>
             <param-value>UTF-8</param-value>

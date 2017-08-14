@@ -31,6 +31,8 @@
         <module>coding-otherThing</module>
         <module>coding-framework</module>
         <module>coding-cas</module>
+        <module>coding-augular</module>
+        <module>coding-springboot</module>
     </modules>
 
     <!-- maven中默认的版本配置-->
