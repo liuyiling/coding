@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>厦门航空</title>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="aplus-touch" content="1"/>
+    <link rel="stylesheet" href="../../stylesheets/orderDetail.css"/>
+    <script>(function(a){var d=document.documentElement,c=null;function b(){a.rem=d.getBoundingClientRect().width/20;if(/ZTE U930_TD/.test(navigator.userAgent)){a.rem=a.rem*1.13}d.style.fontSize=a.rem+"px"}b();a.addEventListener("resize",function(){clearTimeout(c);c=setTimeout(b,300)});a.addEventListener("orientationchange",function(){clearTimeout(c);c=setTimeout(b,300)})})(window,undefined);
+    </script>
+    <script src="../../common/zepto.min.js"></script>
+</head>
+<body>
+<div class="nav-bar">
+    <span class="back J_HistoryBack">返回</span>
+    订单详情
+</div>
+
+<div class="order-detail">
+    <div class="J_OrderDetail"></div>
+
+    <!--价格详情-->
+    <div class="J_PriceDetail"></div>
+
+    <div class="fill"></div>
+
+    <div class="J_Footer"></div>
+
+</div>
+
+<script type="text/juicer" id="J_ListTpl">
+
+    {@each listInfo as item}
+        {# 航班状态}
+
+        {@if item.orderStatus == '2'}
+            {# 待支付}
+            <div class="order-detail-info">
+                <div class="flex order-detail-time order-detail-yellow">
+                    <div class="flex-item3">订单号: ${item.orderNo}</div>
+                    <div class="flex-item2 text-right">订单时间 ${item.createTime | dateFormat}</div>
+                </div>
+                <div class="flex order-detail-state">
+                    <div class="flex-item state-name">订单状态</div>
+                    <div class="flex-item text-right re-time">剩余支付时间</div>
+                </div>
+                <div class="flex order-detail-state2">
+                    <div class="flex-item state-name"><span class="state-wait fs18">待支付</span><a class="btn-state-detail">取消订单</a></div>
+                    <div class="flex-item text-right time-item">30 分 00 秒</div>
+                </div>
+            </div>
+
+        {@else if item.orderStatus == '3' || item.orderStatus == '7'}
+            {# 待出票 or 出票失败}
+            <div class="order-detail-info">
+                <div class="flex order-detail-time order-detail-yellow">
+                    <div class="flex-item3">订单号: ${item.orderNo}</div>
+                    <div class="flex-item2 text-right">订单时间 ${item.createTime | dateFormat}</div>
+                </div>
+                <div class="flex order-detail-state">
+                    <div class="flex-item state-name">订单状态</div>
+                    <div class="flex-item text-right state">${item.orderStatus | filterStatus}</div>
+                </div>
+            </div>
+
+        {@else if item.orderStatus == '4'}
+            {# 已出票}
+            <div class="order-detail-info">
+                <div class="flex order-detail-time order-detail-green">
+                    <div class="flex-item3">订单号: ${item.orderNo}</div>
+                    <div class="flex-item2 text-right">订单时间 ${item.createTime | dateFormat}</div>
+                </div>
+                <div class="order-detail-state-drawn">
+                    <div class="flex state-drawn">
+                        <div class="flex-item state-name">订单状态</div>
+                        <div class="flex-item text-right drawn">${item.orderStatus | filterStatus}</div>
+                    </div>
+
+                    {@each item.orderProductRelationInfoDtoLst[0].orderTicketInfoDtoLst[0].orderPassengerInfoDto as infoPassengerItem}
+                        <div class="flex state-drawn">
+                            <div class="flex-item2 fs14"> ${infoPassengerItem.psgrName}</div>
+                            <div class="flex-item3 text-right">票号：${infoPassengerItem.etCode}</div>
+                            <div class="flex-item text-right"> ${infoPassengerItem.penStatus | penFilterStatus} </div>
+                        </div>
+                    {@/each}
+
+                </div>
+            </div>
+
+        {@else if item.orderStatus == '1' || item.orderStatus == '5' || item.orderStatus == '6'}
+            {# 未支付作废 or 已支付作废}
+            <div class="order-detail-info">
+                <div class="flex order-detail-time order-detail-gray">
+                    <div class="flex-item3">订单号: ${item.orderNo}</div>
+                    <div class="flex-item2 text-right">订单时间 ${item.createTime | dateFormat}</div>
+                </div>
+                <div class="flex order-detail-state">
+                    <div class="flex-item state-name">订单状态</div>
+                    <div class="flex-item text-right state">${item.orderStatus | filterStatus}</div>
+                </div>
+            </div>
+
+        {@else}
+        {@/if}
+
+
+
+        {@if item.rangeType == 'RT'}
+            {# 往返航班}
+            <div class="order-detail-flight" data-type="${item.rangeType}" data-price="${item.orderPrice}">
+
+                {@each item.orderProductRelationInfoDtoLst[0].orderTicketInfoDtoLst as infoDtoItem1}
+                <div class="order-flight-oneWay flex">
+                    <div class="flex-item4"><i class="icon mr5"></i>${infoDtoItem1.orderSegmentInfoDto.flightNo} {@if infoDtoItem1.orderSegmentInfoDto.isShare != '0'}实际乘坐${infoDtoItem1.orderSegmentInfoDto.actualCarrier} ${infoDtoItem1.orderSegmentInfoDto.actualFlightNo}{@/if}</div>
+                    <div class="flex-item text-right re-rule J_Rule">退改签规则</div>
+                </div>
+                <div class="order-flight-con">
+                    <div class="flex order-flight-con-title">
+                        <div class="flex-item">${infoDtoItem1.orderSegmentInfoDto.flightDate | dateFormat} 周${infoDtoItem1.orderSegmentInfoDto.flightDate | weekFormat}</div>
+                        <div class="flex-item text-right">
+                            {# 机型}
+                            {@if infoDtoItem1.orderFlightInfoDto.flightPlane == '787'}
+                                <i class="flight-model-787icon"></i>
+                            {@else}
+                                <span class="order-flight-model">机型 | ${infoDtoItem1.orderFlightInfoDto.flightPlane}</span>
+                            {@/if}
+
+                            {# 餐食类型}
+                            {@if infoDtoItem1.orderSegmentInfoDto.isMeal != '0'}
+                                {@if infoDtoItem1.orderSegmentInfoDto.isMeal == '1'}
+                                    <i class="flight-food-dinner-icon"></i>
+                                {@else}
+                                    <i class="flight-food-snack-icon"></i>
+                                {@/if}
+                            {@else}
+                                <i class="flight-food-no"></i>
+                            {@/if}
+
+                        </div>
+                    </div>
+                    <div class="flex order-flight-con-con">
+                        <div class="flex-item3 clearfix">
+                            <div class="fl area text-center">
+                                <h1>${infoDtoItem1.orderSegmentInfoDto.flightTime}</h1>
+                                <p>${infoDtoItem1.orderFlightInfoDto.orgAirportName}${infoDtoItem1.orderFlightInfoDto.orgTerminal}</p>
+                            </div>
+                            {@if infoDtoItem1.orderFlightInfoDto.isStop == "1"}
+                                <div class="fl stop-over">
+                                    <i class="btn-shipping-space">经停</i>
+                                    <p>${infoDtoItem1.orderSegmentInfoDto.stopCityName}</p>
+                                </div>
+                            {@else}
+                                <div class="fl stop-over"></div>
+                            {@/if}
+                            <div class="fl area text-center">
+                                <h1>${infoDtoItem1.orderSegmentInfoDto.arrTime}</h1>
+                                <p>${infoDtoItem1.orderFlightInfoDto.dstAirportName}${infoDtoItem1.orderFlightInfoDto.dstTerminal}</p>
+                            </div>
+                        </div>
+                        <div class="flex-item text-right shipping-space">${infoDtoItem1.orderSegmentInfoDto.cabinName}</div>
+                    </div>
+                </div>
+                {@/each}
+
+                {@each item.orderProductRelationInfoDtoLst[1].orderTicketInfoDtoLst as infoDtoItem2}
+                <div class="order-flight-douWay flex">
+                    <div class="flex-item4"><i class="icon mr5"></i>${infoDtoItem2.orderSegmentInfoDto.flightNo} {@if infoDtoItem2.orderSegmentInfoDto.isShare != '0'}实际乘坐${infoDtoItem2.orderSegmentInfoDto.actualCarrier} ${infoDtoItem2.orderSegmentInfoDto.actualFlightNo}{@/if}</div>
+                    <div class="flex-item text-right re-rule J_Rule">退改签规则</div>
+                </div>
+                <div class="order-flight-con">
+                    <div class="flex order-flight-con-title">
+                        <div class="flex-item">${infoDtoItem2.orderSegmentInfoDto.flightDate | dateFormat} 周${infoDtoItem2.orderSegmentInfoDto.flightDate | weekFormat}</div>
+                        <div class="flex-item text-right">
+                            {# 机型}
+                            {@if infoDtoItem2.orderFlightInfoDto.flightPlane == '787'}
+                                <i class="flight-model-787icon"></i>
+                            {@else}
+                                <span class="order-flight-model">机型 | ${infoDtoItem2.orderFlightInfoDto.flightPlane}</span>
+                            {@/if}
+
+                            {# 餐食类型}
+                            {@if infoDtoItem2.orderSegmentInfoDto.isMeal != '0'}
+                                {@if infoDtoItem2.orderSegmentInfoDto.isMeal == '1'}
+                                    <i class="flight-food-dinner-icon"></i>
+                                {@else}
+                                    <i class="flight-food-snack-icon"></i>
+                                {@/if}
+                            {@else}
+                                <i class="flight-food-no"></i>
+                            {@/if}
+
+                        </div>
+                    </div>
+                    <div class="flex order-flight-con-con">
+                        <div class="flex-item3 clearfix">
+                            <div class="fl area text-center">
+                                <h1>${infoDtoItem2.orderSegmentInfoDto.flightTime}</h1>
+                                <p>${infoDtoItem2.orderFlightInfoDto.orgAirportName}${infoDtoItem2.orderFlightInfoDto.orgTerminal}</p>
+                            </div>
+                            {@if infoDtoItem2.orderFlightInfoDto.isStop == "1"}
+                                <div class="fl stop-over">
+                                    <i class="btn-shipping-space">经停</i>
+                                    <p>${infoDtoItem2.orderSegmentInfoDto.stopCityName}</p>
+                                </div>
+                            {@else}
+                                <div class="fl stop-over"></div>
+                            {@/if}
+                            <div class="fl area text-center">
+                                <h1>${infoDtoItem2.orderSegmentInfoDto.arrTime}</h1>
+                                <p>${infoDtoItem2.orderFlightInfoDto.dstAirportName}${infoDtoItem2.orderFlightInfoDto.dstTerminal}</p>
+                            </div>
+                        </div>
+                        <div class="flex-item text-right shipping-space">${infoDtoItem2.orderSegmentInfoDto.cabinName}</div>
+                    </div>
+                </div>
+                {@/each}
+
+            </div>
+
+        {@else if item.rangeType == 'OW'}
+
+            {# 单程航班}
+            {@each item.orderProductRelationInfoDtoLst[0].orderTicketInfoDtoLst as infoDtoItem}
+            <div class="order-detail-flight" data-type="${item.rangeType}" data-price="${item.orderPrice}">
+                <div class="order-flight-title flex">
+                   <div class="flex-item4"><i class="icon mr5"></i>${infoDtoItem.orderSegmentInfoDto.flightNo} {@if infoDtoItem.orderSegmentInfoDto.isShare != '0'}实际乘坐${infoDtoItem.orderSegmentInfoDto.actualCarrier} ${infoDtoItem.orderSegmentInfoDto.actualFlightNo}{@/if}</div>
+                    <div class="flex-item text-right re-rule J_Rule">退改签规则</div>
+                </div>
+                <div class="order-flight-con">
+                    <div class="flex order-flight-con-title">
+                        <div class="flex-item">${infoDtoItem.orderSegmentInfoDto.flightDate | dateFormat} 周${infoDtoItem.orderSegmentInfoDto.flightDate | weekFormat}</div>
+                        <div class="flex-item text-right">
+                            {# 机型}
+                            {@if infoDtoItem.orderFlightInfoDto.flightPlane == '787'}
+                                <i class="flight-model-787icon"></i>
+                            {@else}
+                                <span class="order-flight-model">机型 | ${infoDtoItem.orderFlightInfoDto.flightPlane}</span>
+                            {@/if}
+
+                            {# 餐食类型}
+                            {@if infoDtoItem.orderSegmentInfoDto.isMeal != '0'}
+                                {@if infoDtoItem.orderSegmentInfoDto.isMeal == '1'}
+                                    <i class="flight-food-dinner-icon"></i>
+                                {@else}
+                                    <i class="flight-food-snack-icon"></i>
+                                {@/if}
+                            {@else}
+                                <i class="flight-food-no"></i>
+                            {@/if}
+
+                        </div>
+                    </div>
+                    <div class="flex order-flight-con-con">
+                        <div class="flex-item3 clearfix">
+                            <div class="fl area text-center">
+                                <h1>${infoDtoItem.orderSegmentInfoDto.flightTime}</h1>
+                                <p>${infoDtoItem.orderFlightInfoDto.orgAirportName}${infoDtoItem.orderFlightInfoDto.orgTerminal}</p>
+                            </div>
+                            {@if infoDtoItem.orderFlightInfoDto.isStop == "1"}
+                                <div class="fl stop-over">
+                                    <i class="btn-shipping-space">经停</i>
+                                    <p>${infoDtoItem.orderSegmentInfoDto.stopCityName}</p>
+                                </div>
+                            {@else}
+                                <div class="fl stop-over"></div>
+                            {@/if}
+                            <div class="fl area text-center">
+                                <h1>${infoDtoItem.orderSegmentInfoDto.arrTime}</h1>
+                                <p>${infoDtoItem.orderFlightInfoDto.dstAirportName}${infoDtoItem.orderFlightInfoDto.dstTerminal}</p>
+                            </div>
+                        </div>
+                        <div class="flex-item text-right shipping-space">${infoDtoItem.orderSegmentInfoDto.cabinName}</div>
+                    </div>
+                </div>
+            </div>
+            {@/each}
+
+        {@/if}
+
+
+        {# 乘机人信息}
+        <div class="order-detail-oppo">
+
+            <div class="order-detail-oppo-title J_OppoInfo">
+                <span class="oppo-info">乘机人信息</span>
+                <span class="people-class">成人× <span class="red">${adult}</span></span>
+                <span class="people-class">儿童× <span class="red" id="J_childNum">${child}</span></span>
+                <i class="rectangle-down"></i>
+            </div>
+            <div class="order-detail-oppo-con J_OppoCon" style="display: none;">
+
+                {@each item.orderProductRelationInfoDtoLst[0].orderTicketInfoDtoLst[0].orderPassengerInfoDto as infoPassengerItem}
+                    <div class="order-detail-oppo-list">
+
+                        {@if infoPassengerItem.psgrType == 'ADT'}
+                            <p class="order-detail-oppo-name">${infoPassengerItem.psgrName}</p>
+                        {@else if infoPassengerItem.psgrType == 'CHD'}
+                            <p class="order-detail-oppo-name">${infoPassengerItem.firstName}/${infoPassengerItem.lastName} (儿童)</p>
+                        {@/if}
+
+                            <p class="order-detail-oppo-card">${infoPassengerItem.certType | filterType}  ${infoPassengerItem.certNo}</p>
+
+                    </div>
+                {@/each}
+
+            </div>
+
+        </div>
+
+        {# 联系人信息}
+        <div class="order-detail-contact flex">
+            <div class="flex-item contact-info">联系人信息</div>
+            <div class="flex-item">${item.contactsName}</div>
+            <div class="flex-item text-right">${item.contactsPhone}</div>
+        </div>
+
+    {@/each}
+
+</script>
+
+<script type="text-juicer" id="J_ListTpl2">
+    {@each listInfo as item}
+        {@if item.orderStatus == '4'}
+            <div class="fixed-nav" id="J_ApplyRefund">
+                <a class="db" href="javascript:;">
+                <div class="footer-apply-refund">
+                    <i class="apply-refund-icon"></i>
+                    <p>申请退票</p>
+                </div>
+                </a>
+            </div>
+        {@else if item.orderStatus == '3' || item.orderStatus == '5'}
+        {@else}
+            <div class="fixed-nav">
+                <div class="flex footer-refund">
+                    <div class="flex-item3">
+                        <div class="total-price J_PTDetail">
+                            <span class="price">总价￥<span class="fs24">${item.orderPrice}</span></span>
+                            <span class="price-details">明细<i class="rectangle-down-little"></i></span>
+                        </div>
+                    </div>
+                    {@if item.orderStatus == '2'}
+                        <div class="flex-item2"><a class="btn-refund" id="J_Payment">立即支付</a></div>
+                    {@else}
+                        <div class="flex-item2"><a class="btn-refund" id="J_Refund">退款</a></div>
+                    {@/if}
+                </div>
+            </div>
+
+            <div class="mask-panel-price J_PDetail" style="display: none;">
+                <div class="mask-page-price"></div>
+                <div class="price-panel">
+                    {@if item.rangeType == 'OW'}
+
+                        <div class="content-price">
+                            <div class="content-price-list">
+
+                                {@if orderItem.psgrType == 'ADT' && orderItem.feeType == '1' && orderItem.feeName == 'SCNY' }
+                                    <div class="flex content-price-group">
+                                        <div class="flex-item2">成人票</div>
+                                        <div class="flex-item2 text-right price-little">¥${orgAdultPrice}</div>
+                                        <div class="flex-item text-right">× ${adult}人</div>
+                                    </div>
+                                {@/if}
+
+                                <div class="flex content-price-group J_childShow">
+                                    <div class="flex-item2">儿童票</div>
+                                    <div class="flex-item2 text-right price-little">¥${orgChildPrice}</div>
+                                    <div class="flex-item text-right">× ${child}人</div>
+                                </div>
+                                <div class="flex content-price-group">
+                                    <div class="flex-item2">成人机建费</div>
+                                    <div class="flex-item2 text-right price-little">¥${orgAdultMachine}</div>
+                                    <div class="flex-item text-right">× ${adult}人</div>
+                                </div>
+                                <div class="flex content-price-group J_childShow">
+                                    <div class="flex-item2">儿童机建费</div>
+                                    <div class="flex-item2 text-right price-little">¥0</div>
+                                    <div class="flex-item text-right">× ${child}人</div>
+                                </div>
+                                <div class="flex content-price-group">
+                                    <div class="flex-item2">成人燃油费</div>
+                                    <div class="flex-item2 text-right price-little">¥0</div>
+                                    <div class="flex-item text-right">× ${adult}人</div>
+                                </div>
+                                <div class="flex content-price-group J_childShow">
+                                    <div class="flex-item2">儿童燃油费</div>
+                                    <div class="flex-item2 text-right price-little">¥0</div>
+                                    <div class="flex-item text-right">× ${child}人</div>
+                                </div>
+                            </div>
+                            <div class="content-price-list">
+                                <div class="flex content-price-group">
+                                    <div class="flex-item2">航空意外险</div>
+                                    <div class="flex-item2 text-right price-little">¥${orgAccident}</div>
+                                    <div class="flex-item text-right">× ${totalTrip}份</div>
+                                </div>
+                                <div class="flex content-price-group">
+                                    <div class="flex-item2">航空延误险</div>
+                                    <div class="flex-item2 text-right price-little">¥${orgDelay}</div>
+                                    <div class="flex-item text-right">× ${totalTrip}份</div>
+                                </div>
+                            </div>
+                            <div class="content-price-list">
+                                <div class="flex content-price-group">
+                                    <div class="flex-item2">优惠券</div>
+                                    <div class="flex-item2 text-right price-little">-¥0</div>
+                                    <div class="flex-item text-right">× 0份</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    {@else if item.rangeType == 'RT'}
+                        <div class="content-price">
+                            <div class="content-price-list">
+                                <div class="flex content-price-group">
+                                    <div class="flex-item2">成人票（去程）</div>
+                                    <div class="flex-item2 text-right price-little">¥${orgAdultPrice}</div>
+                                    <div class="flex-item text-right">× ${adult}人</div>
+                                </div>
+                                <div class="flex content-price-group">
+                                    <div class="flex-item2">成人票（返程）</div>
+                                    <div class="flex-item2 text-right price-little">¥${dstAdultPrice}</div>
+                                    <div class="flex-item text-right">× ${adult}人</div>
+                                </div>
+                                <div class="flex content-price-group J_childShow">
+                                    <div class="flex-item2">儿童票（去程）</div>
+                                    <div class="flex-item2 text-right price-little">¥${orgChildPrice}</div>
+                                    <div class="flex-item text-right">× ${child}人</div>
+                                </div>
+                                <div class="flex content-price-group J_childShow">
+                                    <div class="flex-item2">儿童票（返程）</div>
+                                    <div class="flex-item2 text-right price-little">¥${dstChildPrice}</div>
+                                    <div class="flex-item text-right">× ${child}人</div>
+                                </div>
+                                <div class="flex content-price-group">
+                                    <div class="flex-item2">成人机建费（往返）</div>
+                                    <div class="flex-item2 text-right price-little">¥${adultMachine}</div>
+                                    <div class="flex-item text-right">× ${totalAdult}人</div>
+                                </div>
+                                <div class="flex content-price-group J_childShow">
+                                    <div class="flex-item2">儿童机建费（往返）</div>
+                                    <div class="flex-item2 text-right price-little">¥0</div>
+                                    <div class="flex-item text-right">× ${totalChild}人</div>
+                                </div>
+                                <div class="flex content-price-group">
+                                    <div class="flex-item2">成人燃油费（往返）</div>
+                                    <div class="flex-item2 text-right price-little">¥0</div>
+                                    <div class="flex-item text-right">× ${totalAdult}人</div>
+                                </div>
+                                <div class="flex content-price-group J_childShow">
+                                    <div class="flex-item2">儿童燃油费（往返）</div>
+                                    <div class="flex-item2 text-right price-little">¥0</div>
+                                    <div class="flex-item text-right">× ${totalChild}人</div>
+                                </div>
+                            </div>
+                            <div class="content-price-list">
+                                <div class="flex content-price-group">
+                                    <div class="flex-item2">航空意外险（往返）</div>
+                                    <div class="flex-item2 text-right price-little">¥${orgAccident}</div>
+                                    <div class="flex-item text-right">× ${totalRt}份</div>
+                                </div>
+                                <div class="flex content-price-group">
+                                    <div class="flex-item2">航空延误险（往返）</div>
+                                    <div class="flex-item2 text-right price-little">¥${orgDelay}</div>
+                                    <div class="flex-item text-right">× ${totalRt}份</div>
+                                </div>
+                            </div>
+                            <div class="content-price-list">
+                                <div class="flex content-price-group">
+                                    <div class="flex-item2">优惠券</div>
+                                    <div class="flex-item2 text-right price-little">-¥0</div>
+                                    <div class="flex-item text-right">× 0份</div>
+                                </div>
+                            </div>
+                        </div>
+                    {@/if}
+                </div>
+            </div>
+        {@/if}
+    {@/each}
+</script>
+<script  type="text-juicer" id="J_ListTpl3">
+    {@each listInfo as item}
+        {@if item.orderStatus == '4' || item.orderStatus == '3' || item.orderStatus == '5'}
+            <div class="order-detail-price">
+                <div class="order-detail-price-title flex  J_PriceInfo">
+                    <div class="flex-item2 price-info">价格详情</div>
+                    <div class="flex-item2 text-right"><span class="price">￥<span class="fs24">${item.orderPrice}</span></span></div>
+                    <div class="flex-item"><i class="rectangle-down"></i></div>
+
+                </div>
+                <div class="order-detail-price-con J_PriceCon" style="display: none;">
+
+                {@if item.rangeType == 'OW'}
+
+                    <div class="order-detail-price-list">
+                        <div class="flex">
+                            <div class="flex-item2">成人票</div>
+                            <div class="flex-item2 text-right price-little">¥${orgAdultPrice}</div>
+                            <div class="flex-item text-right">x ${adult}人</div>
+                        </div>
+                        <div class="flex J_childShow">
+                            <div class="flex-item2">儿童票</div>
+                            <div class="flex-item2 text-right price-little">¥${orgChildPrice}</div>
+                            <div class="flex-item text-right">x ${child}人</div>
+                        </div>
+                        <div class="flex">
+                            <div class="flex-item2">成人票机建费</div>
+                            <div class="flex-item2 text-right price-little">¥${orgAdultMachine}</div>
+                            <div class="flex-item text-right">x ${adult}人</div>
+                        </div>
+                        <div class="flex J_childShow">
+                            <div class="flex-item2">儿童票机建费</div>
+                            <div class="flex-item2 text-right price-little">¥0</div>
+                            <div class="flex-item text-right">x ${child}人</div>
+                        </div>
+                        <div class="flex">
+                            <div class="flex-item2">成人票燃油费</div>
+                            <div class="flex-item2 text-right price-little">¥0</div>
+                            <div class="flex-item text-right">x ${adult}人</div>
+                        </div>
+                        <div class="flex J_childShow">
+                            <div class="flex-item2">儿童票燃油费</div>
+                            <div class="flex-item2 text-right price-little">¥0</div>
+                            <div class="flex-item text-right">x ${adult}人</div>
+                        </div>
+                    </div>
+                    <div class="order-detail-price-list">
+                        <div class="flex">
+                            <div class="flex-item2">航空意外险</div>
+                            <div class="flex-item2 text-right price-little">¥${orgAccident}</div>
+                            <div class="flex-item text-right">× ${totalTrip}份</div>
+                        </div>
+                        <div class="flex">
+                            <div class="flex-item2">航空延误险</div>
+                            <div class="flex-item2 text-right price-little">¥${orgDelay}</div>
+                            <div class="flex-item text-right">× ${totalTrip}份</div>
+                        </div>
+                    </div>
+                    <div class="order-detail-price-list" >
+                        <div class="flex">
+                            <div class="flex-item2">优惠券</div>
+                            <div class="flex-item2 text-right price-little">- ¥0</div>
+                            <div class="flex-item text-right">0份</div>
+                        </div>
+                    </div>
+                </div>
+
+                {@else if item.rangeType == 'RT'}
+
+                    <div class="order-detail-price-list">
+                        <div class="flex">
+                            <div class="flex-item2">成人票（去程）</div>
+                            <div class="flex-item2 text-right price-little">¥${orgAdultPrice}</div>
+                            <div class="flex-item text-right">x ${adult}人</div>
+                        </div>
+                        <div class="flex">
+                            <div class="flex-item2">成人票（返程）</div>
+                            <div class="flex-item2 text-right price-little">¥${orgChildPrice}</div>
+                            <div class="flex-item text-right">x ${adult}人</div>
+                        </div>
+                        <div class="flex J_childShow">
+                            <div class="flex-item2">儿童票（去程）</div>
+                            <div class="flex-item2 text-right price-little">¥${dstAdultPrice}</div>
+                            <div class="flex-item text-right">x ${child}人</div>
+                        </div>
+                        <div class="flex J_childShow">
+                            <div class="flex-item2">儿童票（返程）</div>
+                            <div class="flex-item2 text-right price-little">¥${dstChildPrice}</div>
+                            <div class="flex-item text-right">x ${child}人</div>
+                        </div>
+                        <div class="flex">
+                            <div class="flex-item2">成人票机建费（往返）</div>
+                            <div class="flex-item2 text-right price-little">¥${adultMachine}</div>
+                            <div class="flex-item text-right">x ${totalAdult}人</div>
+                        </div>
+                        <div class="flex J_childShow">
+                            <div class="flex-item2">儿童票机建费（往返）</div>
+                            <div class="flex-item2 text-right price-little">¥0</div>
+                            <div class="flex-item text-right">x ${totalChild}人</div>
+                        </div>
+                        <div class="flex">
+                            <div class="flex-item2">成人票燃油费（往返）</div>
+                            <div class="flex-item2 text-right price-little">¥0</div>
+                            <div class="flex-item text-right">x ${totalAdult}人</div>
+                        </div>
+                        <div class="flex J_childShow">
+                            <div class="flex-item2">儿童票燃油费（往返）</div>
+                            <div class="flex-item2 text-right price-little">¥0</div>
+                            <div class="flex-item text-right">x ${totalChild}人</div>
+                        </div>
+                    </div>
+                    <div class="order-detail-price-list">
+                        <div class="flex">
+                            <div class="flex-item2">航空意外险（往返）</div>
+                            <div class="flex-item2 text-right price-little">¥${orgAccident}</div>
+                            <div class="flex-item text-right">× ${totalRt}份</div>
+                        </div>
+                        <div class="flex">
+                            <div class="flex-item2">航空延误险（往返）</div>
+                            <div class="flex-item2 text-right price-little">¥${orgDelay}</div>
+                            <div class="flex-item text-right">× ${totalRt}份</div>
+                        </div>
+                    </div>
+                    <div class="order-detail-price-list">
+                        <div class="flex">
+                            <div class="flex-item2">优惠券</div>
+                            <div class="flex-item2 text-right price-little">- ¥0</div>
+                            <div class="flex-item text-right">0份</div>
+                        </div>
+                    </div>
+                </div>
+
+            {@/if}
+            </div>
+        {@else}
+        {@/if}
+    {@/each}
+
+
+</script>
+
+
+<script src="../../common/sea.js"></script>
+<script src="../../common/sea-config.js"></script>
+
+
+<script>
+    seajs.use(['loading', 'juicer', 'mask', 'pad', 'util', 'sm', 'common'], function(Loading, Juicer, Mask, Pad, Util, SM, Common) {
+
+        var WIN = window;
+        var DOC = document;
+
+        // var loading = new Loading();
+        // loading.show()
+        // setTimeout(function(){
+        //     loading.hide();
+        // }, 2000)
+
+
+        //乘机人信息折叠
+        $(DOC).delegate('.J_OppoInfo', 'click', function(){
+            var self = $(this);
+            var content = $('.J_OppoCon');
+
+            self.toggleClass('active');
+            content.toggle();
+
+        });
+        //倒计时
+        var maxTime = 1800;
+        setInterval(function(){
+
+            if(maxTime > 0 ){
+                var minutes = Math.floor(maxTime/60);
+                var seconds = Math.floor(maxTime%60);
+
+                if(seconds < 10){
+                    $('.time-item').html(minutes+" 分 0"+seconds+" 秒");
+                }else{
+                    $('.time-item').html(minutes+" 分 "+seconds+" 秒");
+                }
+                --maxTime;
+            }
+
+        },1000);
+        //价格详情折叠
+        $(DOC).delegate('.J_PriceInfo', 'click', function(){
+            var self = $(this);
+            var content = $('.J_PriceCon');
+
+            self.toggleClass('active');
+            content.toggle();
+
+        });
+        //退改签规则pad
+        var pad = new Pad({
+            height: '200px',
+            fadeIn: true,
+            content: '<div class="pad-panel"><div class="title">退改签规则</div><div class="content"><div class="rule-mask-con"><h1>改期条件</h1><p>航班日起飞前2小时前(含)免费改期3次，超过3次收取经济舱全票价(Y)的5%（特殊时段免费改期3次，超过3次收取5%）。起飞前2小时后经济舱全票价(Y)的5%（特殊时段为10%）,改期需补齐差价。</p><h1>退票条件</h1><p>航班日起飞前2小时前（含）经济舱全票价(Y)的5%（特殊时段为10%），起飞前2小时后经济舱全票价(Y)的10%（特殊时段为20%）；此外，来回程客票，若部分使用，应选返还已享受的优惠，同时收取舱位对应的退票费。<br />（注：特殊时段是指航班日为每年春运、7月1日-8月31日期间）</p></div></div></div>',
+            tapMaskCallback: function(){
+                console.log('111');
+                pad.hide();
+            },
+            afterHide: function(){
+                console.log('pad hide');
+            }
+        });
+        $(DOC).delegate('.J_Rule', 'click', function(){
+            pad.show();
+        });
+        //明细折叠
+        $(DOC).delegate('.J_PTDetail', 'click', function(){
+            var self = $(this);
+            var content = $('.J_PDetail');
+
+            self.toggleClass('active');
+            content.toggle();
+
+        });
+        //出票失败情况下的弹窗mask
+        var tipMask = new Mask({
+            fadeIn: true,
+            content: '<div class="tip-panel"><div class="title">提示</div><div class="tip-content"><p>该订单不是已出票订单，</p><p>如需出票请联系厦航客服<a href="tel:95557">95557</a>处理。</p><p>如需退款，请点击确定。</p></div><div class="text-center"> <a href="javascript:;" class="btn-mask btn-mask-yellow J_cancel">取 消</a><a href="javascript:;" class="btn-mask J_sure">确 定</a></div></div>',
+
+        });
+        $(DOC).delegate('.J_sure', 'click', function(){
+            WIN.location.href = '../refund/choosePeople.html';
+        });
+        $(DOC).delegate('.J_cancel', 'click', function(){
+            tipMask.hide();
+        });
+
+
+
+        // 状态判断 d.orderStatus 1-已保存(异常处理状态),2-已提交(待支付),3-已支付(待出票),4-已出票,5-已取消(未支付作废),6-已支付作废,7-出票失败
+        var statusMap = ['已保存', '待支付', '待出票', '已出票', '未支付作废', '已支付作废', '出票失败'];
+        Juicer.register('filterStatus', function(status){
+            return statusMap[Number(status) - 1];
+        });
+
+        //个人票使用状态判断 penStatus 1-已使用, 2-未使用, 3-已退票
+        var penStatusMap = ['已使用', '未使用', '已退票'];
+        Juicer.register('penFilterStatus', function(penStatus){
+            return penStatusMap[Number(penStatus) - 1];
+        });
+
+        //证件类型判断 0-身份证, 1-护照, 2-台湾居民往来大陆通行证（台胞证）, 3-往来港澳通行证, 4-回乡证, 5-港澳单程证, 6-因公往来港澳通行证, 7-大陆居民赴台通行证, 8-海员证, 9-其他证件
+        var typeMap = ['身份证', '护照', '台胞证', '往来港澳通行证', '回乡证', '港澳单程证', '因公往来港澳通行证', '大陆居民赴台通行证', '海员证', '其他证件'];
+        Juicer.register('filterType', function(certType){
+            return typeMap[Number(certType)];
+        });
+
+
+
+        Juicer.register('dateFormat', function(s){
+            var date = new Date(s);
+            var year = date.getFullYear(),
+                month = date.getMonth() + 1,
+                day = date.getDate();
+
+            return year + '.' + (month > 9 ? month : ('0' + month)) + '.' + (day > 9 ? day : ('0' + day));
+        });
+
+        Juicer.register('weekFormat', function(e){
+            var date = new Date(e);
+            var weekday = new Array("日", "一", "二", "三", "四", "五", "六");
+
+            return weekday[date.getDay()];
+
+        });
+
+        var mockData = {
+            "code": 1,
+            "msg": "SUCCESS",
+            "errStr": null,
+            "result": {
+                "orderInfoDetailSearchDtoLst": {
+                    "orderNo": "2017061510000100",
+                    "userId": "test1234",
+                    "orderStatus": 7,
+                    "orderType": 0,
+                    "createTime": 1497494950000,
+                    "contactsName": "test/lii",
+                    "contactsPhone": "18698665864",
+                    "oldOrderId": null,
+                    "orderSource": 2,
+                    "orderPrice": 2620,
+                    "internationalFlag": "1",
+                    "rangeType": "RT",
+                    "orgCity": "PEK",
+                    "dstCity": "XMN",
+                    "changeType": null,
+                    "ifValid": null,
+                    "versionSource": null,
+                    "isUsa": null,
+                    "loginType": null,
+                    "submitTime": null,
+                    "paymentFirst": 0,
+                    "contactsEmail": "171410238@qq.com",
+                    "pnr": "NBCFP6",
+                    "orderProductRelationInfoDtoLst": [
+                        {
+                            "orderNo": "2017061510000100",
+                            "productCode": "ticketProduct",
+                            "createTime": null,
+                            "userId": "test1234",
+                            "productType": "0",
+                            "productRate": 1,
+                            "ifValid": null,
+                            "currency": "CNY",
+                            "saleprice": null,
+                            "ifPackage": "0",
+                            "couponId": null,
+                            "couponNum": 100, //新增优惠券金额
+                            "orderTicketInfoDtoLst": [
+                                {
+                                    "orderNo": "2017061510000100",
+                                    "psgrId": "51F7B6D257154CC2E0530200007F6DAA",
+                                    "segmentId": "51F7B6D257134CC2E0530200007F6DAA",
+                                    "couponStatus": 0,
+                                    "pnr": "NBCFP6",
+                                    "ticketNo": null,
+                                    "printTicketTime": null,
+                                    "oldTicketNo": null,
+                                    "oldSegmentId": null,
+                                    "segmentIndex": "S1",
+                                    "flightIndex": "0",
+                                    "bookingProductId": "51F7B6D257174CC2E0530200007F6DAA",
+                                    "resourceCode": "ticket",
+                                    "orderFlightInfoDto": {
+                                        "orderNo": "2017061510000100",
+                                        "ticketNo": null,
+                                        "flightDate": 1499356800000,
+                                        "orgCity": "PEK",
+                                        "orgCityName": "北京",
+                                        "orgAirportName": "首都", //新增出发机场名称
+                                        "dstCity": "XMN",
+                                        "dstCityName": "厦门",
+                                        "dstAirportName": "高崎", //新增到达机场名称
+                                        "orgTerminal": "T3",
+                                        "dstTerminal": "T3",
+                                        "flightPlane": "757",
+                                        "flightTime": null,
+                                        "arrDate": 1499356800000,
+                                        "arrTime": null,
+                                        "isStop": 0,
+                                        "isShare": 0,
+                                        "actualFlightNo": "MF8118",
+                                        "actualCarrier": null,
+                                        "stopCity": null,
+                                        "stopTime": null,
+                                        "refundModifyRule": null,
+                                        "isMeal": null,
+                                        "mealId": null,
+                                        "flightIndex": 0
+                                    },
+                                    "orderPassengerInfoDto": [
+                                        {
+                                            "orderNo": "2017061510000100",
+                                            "psgrType": "ADT",
+                                            "psgrIndex": "P1",
+                                            "psgrName": "test/adtb",
+                                            "certType": 0,
+                                            "certNo": "230903198703251111",
+                                            "etCode": "7312345352291", //新增'客票号'
+                                            "penStatus": 1, //新增每个旅客的票使用情况，对应订单已出票状态的1-已使用, 2-未使用, 3-已退票
+                                            "expirationDate": null,
+                                            "psgrBirth": null,
+                                            "psgrPhone": null,
+                                            "psgrSex": null,
+                                            "psgrAge": null,
+                                            "lastName": 'YANG',
+                                            "firstName": 'YE',
+                                            "cardCompany": null,
+                                            "cardNo": null,
+                                            "bundleId": null,
+                                            "nation": null,
+                                            "issuenation": null,
+                                            "cardCompanyCode": null,
+                                            "psgrId": null,
+                                            "address": null,
+                                            "city": null,
+                                            "state": null,
+                                            "zipCode": null
+                                        },
+                                        {
+                                            "orderNo": "2017061510000100",
+                                            "psgrType": "CHD",
+                                            "psgrIndex": "P2",
+                                            "psgrName": "test/chdb",
+                                            "certType": 0,
+                                            "certNo": "230903200903251111",
+                                            "etCode": "7312345352292", //新增'客票号'
+                                            "penStatus": 3, //新增每个旅客的票使用情况，对应订单已出票状态的1-已使用, 2-未使用, 3-已退票
+                                            "expirationDate": null,
+                                            "psgrBirth": null,
+                                            "psgrPhone": null,
+                                            "psgrSex": null,
+                                            "psgrAge": null,
+                                            "lastName": "ZHAO",
+                                            "firstName": "KANG",
+                                            "cardCompany": null,
+                                            "cardNo": null,
+                                            "bundleId": null,
+                                            "nation": null,
+                                            "issuenation": null,
+                                            "cardCompanyCode": null,
+                                            "psgrId": null,
+                                            "address": null,
+                                            "city": null,
+                                            "state": null,
+                                            "zipCode": null
+                                        }
+                                    ],
+                                    "orderSegmentInfoDto": {
+                                        "orderNo": "2017061510000100",
+                                        "flightDate": 1499356800000,
+                                        "flightNo": "MF8118",
+                                        "orgCity": "PEK",
+                                        "orgCityName": null,
+                                        "dstCity": "XMN",
+                                        "dstCityName": null,
+                                        "flightTime": "10:55",
+                                        "arrDate": "2017-07-07",
+                                        "arrTime": "14:00",
+                                        "orgTerminal": null,
+                                        "dstTerminal": null,
+                                        "segmentIndex": null,
+                                        "cabin": "B",
+                                        "cabinName": "尊享头等舱",
+                                        "isShare": 0,
+                                        "flightPlane": null,
+                                        "actualFlightNo": "MF8118",
+                                        "actualCarrier": null,
+                                        "isStop": null,
+                                        "stopCity": null,
+                                        "stopCityName": null,
+                                        "stopTime": null,
+                                        "isMeal": 0,
+                                        "mealId": null,
+                                        "refundModifyRule": null,
+                                        "refundReferHour": 2,
+                                        "refundReferCabin": "B",
+                                        "maxRefundRate": null,
+                                        "serviceCharge": 290, //新增手续费字段
+                                        "minRefundRate": null,
+                                        "changeReferHour": 2,
+                                        "changeReferCabin": "B",
+                                        "maxChangeRate": null,
+                                        "minChangeRate": null,
+                                        "farebase": null,
+                                        "ei": null,
+                                        "tc": null,
+                                        "baggageAllowance": "20",
+                                        "baggageUnit": "KG",
+                                        "flightIndex": "0",
+                                        "orderFeeInfoDto": [
+                                            {
+                                                "orderNo": "2017061510000100",
+                                                "segmentId": "51F7B6D257134CC2E0530200007F6DAA",
+                                                "psgrId": "51F7B6D257154CC2E0530200007F6DAA",
+                                                "psgrType": "ADT", //新增乘机人类型
+                                                "feeType": 1,//1-客票价, 2-机建, 3-燃油, 4-延误险, 5-意外险
+                                                "feeValue": 1640,
+                                                "currency": "CNY",
+                                                "exchangerate": "1.0",
+                                                "remark": null,
+                                                "feeName": "SCNY",
+                                                "psgrIndex": "P1",
+                                                "segmentIndex": "S1"
+                                            },
+                                            {
+                                                "orderNo": "2017061510000100",
+                                                "segmentId": "51F7B6D257134CC2E0530200007F6DAA",
+                                                "psgrId": "51F7B6D257154CC2E0530200007F6DAA",
+                                                "psgrType": "CHT", //新增乘机人类型
+                                                "feeType": 1,//1-客票价, 2-机建, 3-燃油, 4-延误险, 5-意外险
+                                                "feeValue": 880,
+                                                "currency": "CNY",
+                                                "exchangerate": "1.0",
+                                                "remark": null,
+                                                "feeName": "SCNY",
+                                                "psgrIndex": "P2",
+                                                "segmentIndex": "S1"
+                                            },
+                                            {
+                                                "orderNo": "2017061510000100",
+                                                "segmentId": "51F7B6D257134CC2E0530200007F6DAA",
+                                                "psgrId": "51F7B6D257154CC2E0530200007F6DAA",
+                                                "psgrType": "ADT", //新增乘机人类型
+                                                "feeType": 2,//1-客票价, 2-机建, 3-燃油, 4-延误险, 5-意外险
+                                                "feeValue": 100,
+                                                "currency": "CNY",
+                                                "exchangerate": "1.0",
+                                                "remark": null,
+                                                "feeName": "FCNY",
+                                                "psgrIndex": "P1",
+                                                "segmentIndex": "S1"
+                                            },
+                                            {
+                                                "orderNo": "2017061510000100",
+                                                "segmentId": "51F7B6D257134CC2E0530200007F6DAA",
+                                                "psgrId": "51F7B6D257154CC2E0530200007F6DAA",
+                                                "psgrType": "CHT", //新增乘机人类型
+                                                "feeType": 2,//1-客票价, 2-机建, 3-燃油, 4-延误险, 5-意外险
+                                                "feeValue": 0,
+                                                "currency": "CNY",
+                                                "exchangerate": "1.0",
+                                                "remark": null,
+                                                "feeName": "FCNY",
+                                                "psgrIndex": "P2",
+                                                "segmentIndex": "S1"
+                                            },
+                                            {
+                                                "orderNo": "2017061510000100",
+                                                "segmentId": "51F7B6D257134CC2E0530200007F6DAA",
+                                                "psgrId": "51F7B6D257154CC2E0530200007F6DAA",
+                                                "psgrType": "ADT", //新增乘机人类型
+                                                "feeType": 4,//1-客票价, 2-机建, 3-燃油, 4-延误险, 5-意外险
+                                                "feeValue": 30,
+                                                "currency": "CNY",
+                                                "exchangerate": "1.0",
+                                                "remark": null,
+                                                "feeName": "CN",
+                                                "psgrIndex": "P1",
+                                                "segmentIndex": "S1"
+                                            },
+                                            {
+                                                "orderNo": "2017061510000100",
+                                                "segmentId": "51F7B6D257134CC2E0530200007F6DAA",
+                                                "psgrId": "51F7B6D257154CC2E0530200007F6DAA",
+                                                "psgrType": "CHT", //新增乘机人类型
+                                                "feeType": 4,//1-客票价, 2-机建, 3-燃油, 4-延误险, 5-意外险
+                                                "feeValue": 30,
+                                                "currency": "CNY",
+                                                "exchangerate": "1.0",
+                                                "remark": null,
+                                                "feeName": "CN",
+                                                "psgrIndex": "P2",
+                                                "segmentIndex": "S1"
+                                            },
+                                            {
+                                                "orderNo": "2017061510000100",
+                                                "segmentId": "51F7B6D257134CC2E0530200007F6DAA",
+                                                "psgrId": "51F7B6D257154CC2E0530200007F6DAA",
+                                                "psgrType": "ADT", //新增乘机人类型
+                                                "feeType": 5,//1-客票价, 2-机建, 3-燃油, 4-延误险, 5-意外险
+                                                "feeValue": 20,
+                                                "currency": "CNY",
+                                                "exchangerate": "1.0",
+                                                "remark": null,
+                                                "feeName": "YQ",
+                                                "psgrIndex": "P1",
+                                                "segmentIndex": "S1"
+                                            },
+                                            {
+                                                "orderNo": "2017061510000100",
+                                                "segmentId": "51F7B6D257134CC2E0530200007F6DAA",
+                                                "psgrId": "51F7B6D257154CC2E0530200007F6DAA",
+                                                "psgrType": "CHT", //新增乘机人类型
+                                                "feeType": 5,//1-客票价, 2-机建, 3-燃油, 4-延误险, 5-意外险
+                                                "feeValue": 20,
+                                                "currency": "CNY",
+                                                "exchangerate": "1.0",
+                                                "remark": null,
+                                                "feeName": "YQ",
+                                                "psgrIndex": "P2",
+                                                "segmentIndex": "S1"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "orderNo": "2017061510000100",
+                            "productCode": "ticketProduct",
+                            "createTime": null,
+                            "userId": "test1234",
+                            "productType": "0",
+                            "productRate": 1,
+                            "ifValid": null,
+                            "currency": "CNY",
+                            "saleprice": null,
+                            "ifPackage": "0",
+                            "couponId": null,
+                            "couponNum": 100, //新增优惠券金额
+                            "orderTicketInfoDtoLst": [
+                                {
+                                    "orderNo": "2017061510000100",
+                                    "psgrId": "51F7B6D257164CC2E0530200007F6DAA",
+                                    "segmentId": "51F7B6D257144CC2E0530200007F6DAA",
+                                    "couponStatus": 0,
+                                    "pnr": "NBCFP6",
+                                    "ticketNo": null,
+                                    "printTicketTime": null,
+                                    "oldTicketNo": null,
+                                    "oldSegmentId": null,
+                                    "segmentIndex": "S2",
+                                    "flightIndex": "0",
+                                    "bookingProductId": "51F7B6D2571D4CC2E0530200007F6DAA",
+                                    "resourceCode": "ticket",
+                                    "orderFlightInfoDto": {
+                                        "orderNo": "2017061510000100",
+                                        "ticketNo": null,
+                                        "flightDate": 1499356800000,
+                                        "orgCity": "PEK",
+                                        "orgCityName": "北京",
+                                        "orgAirportName": "首都",  //新增出发机场名称
+                                        "dstCity": "XMN",
+                                        "dstCityName": "厦门",
+                                        "dstAirportName": "高崎", //新增到达机场名称
+                                        "orgTerminal": "T3",
+                                        "dstTerminal": "T3",
+                                        "flightPlane": "757",
+                                        "flightTime": null,
+                                        "arrDate": 1499356800000,
+                                        "arrTime": null,
+                                        "isStop": 0,
+                                        "isShare": 0,
+                                        "actualFlightNo": "MF8118",
+                                        "actualCarrier": null,
+                                        "stopCity": null,
+                                        "stopTime": null,
+                                        "refundModifyRule": null,
+                                        "isMeal": null,
+                                        "mealId": null,
+                                        "flightIndex": 0
+                                    },
+                                    "orderPassengerInfoDto":[
+                                        {
+                                            "psgrType": "ADT",
+                                            "psgrIndex": "P1",
+                                            "psgrName": "test/adtb",
+                                            "certType": 0,
+                                            "certNo": "230903198703251111",
+                                            "etCode": "7312345352291", //新增'客票号'
+                                            "penStatus": 1,//新增每个旅客的票使用情况，对应订单已出票状态的1-已使用, 2-未使用, 3-已退票
+                                            "expirationDate": null,
+                                            "psgrBirth": null,
+                                            "psgrPhone": null,
+                                            "psgrSex": null,
+                                            "psgrAge": null,
+                                            "lastName": null,
+                                            "firstName": null,
+                                            "cardCompany": null,
+                                            "cardNo": null,
+                                            "bundleId": null,
+                                            "nation": null,
+                                            "issuenation": null,
+                                            "cardCompanyCode": null,
+                                            "psgrId": null,
+                                            "address": null,
+                                            "city": null,
+                                            "state": null,
+                                            "zipCode": null
+                                        },
+                                        {
+                                            "psgrType": "CHD",
+                                            "psgrIndex": "P2",
+                                            "psgrName": "test/chdb",
+                                            "certType": 0,
+                                            "certNo": "230903200903251111",
+                                            "etCode": "7312345352292", //新增'客票号'
+                                            "penStatus": 3,//新增每个旅客的票使用情况，对应订单已出票状态的1-已使用, 2-未使用, 3-已退票
+                                            "expirationDate": null,
+                                            "psgrBirth": null,
+                                            "psgrPhone": null,
+                                            "psgrSex": null,
+                                            "psgrAge": null,
+                                            "lastName": null,
+                                            "firstName": null,
+                                            "cardCompany": null,
+                                            "cardNo": null,
+                                            "bundleId": null,
+                                            "nation": null,
+                                            "issuenation": null,
+                                            "cardCompanyCode": null,
+                                            "psgrId": null,
+                                            "address": null,
+                                            "city": null,
+                                            "state": null,
+                                            "zipCode": null
+                                        }
+                                    ],
+                                    "orderSegmentInfoDto": {
+                                        "orderNo": "2017061510000100",
+                                        "flightDate": 1499356800000,
+                                        "flightNo": "MF8118",
+                                        "orgCity": "PEK",
+                                        "orgCityName": null,
+                                        "dstCity": "XMN",
+                                        "dstCityName": null,
+                                        "flightTime": "10:55",
+                                        "arrDate": "2017-07-07",
+                                        "arrTime": "14:00",
+                                        "orgTerminal": null,
+                                        "dstTerminal": null,
+                                        "segmentIndex": null,
+                                        "cabin": "Y",
+                                        "cabinName": "经济舱",
+                                        "isShare": 0,
+                                        "flightPlane": null,
+                                        "actualFlightNo": "MF8118",
+                                        "actualCarrier": null,
+                                        "isStop": null,
+                                        "stopCity": null,
+                                        "stopCityName": null,
+                                        "stopTime": null,
+                                        "isMeal": 0,
+                                        "mealId": null,
+                                        "refundModifyRule": null,
+                                        "refundReferHour": 2,
+                                        "refundReferCabin": "Y",
+                                        "serviceCharge": 290, //新增手续费字段
+                                        "maxRefundRate": null,
+                                        "minRefundRate": null,
+                                        "changeReferHour": 2,
+                                        "changeReferCabin": "Y",
+                                        "maxChangeRate": null,
+                                        "minChangeRate": null,
+                                        "farebase": null,
+                                        "ei": null,
+                                        "tc": null,
+                                        "baggageAllowance": "20",
+                                        "baggageUnit": "KG",
+                                        "flightIndex": "0",
+                                        "orderFeeInfoDto": [
+                                            {
+                                                "orderNo": "2017061510000100",
+                                                "segmentId": "51F7B6D257134CC2E0530200007F6DAA",
+                                                "psgrId": "51F7B6D257154CC2E0530200007F6DAA",
+                                                "psgrType": "ADT", //新增乘机人类型
+                                                "feeType": 1,//1-客票价, 2-机建, 3-燃油, 4-延误险, 5-意外险
+                                                "feeValue": 1640,
+                                                "currency": "CNY",
+                                                "exchangerate": "1.0",
+                                                "remark": null,
+                                                "feeName": "SCNY",
+                                                "psgrIndex": "P1",
+                                                "segmentIndex": "S2"
+                                            },
+                                            {
+                                                "orderNo": "2017061510000100",
+                                                "segmentId": "51F7B6D257134CC2E0530200007F6DAA",
+                                                "psgrId": "51F7B6D257154CC2E0530200007F6DAA",
+                                                "psgrType": "CHT", //新增乘机人类型
+                                                "feeType": 1,//1-客票价, 2-机建, 3-燃油, 4-延误险, 5-意外险
+                                                "feeValue": 880,
+                                                "currency": "CNY",
+                                                "exchangerate": "1.0",
+                                                "remark": null,
+                                                "feeName": "SCNY",
+                                                "psgrIndex": "P2",
+                                                "segmentIndex": "S2"
+                                            },
+                                            {
+                                                "orderNo": "2017061510000100",
+                                                "segmentId": "51F7B6D257134CC2E0530200007F6DAA",
+                                                "psgrId": "51F7B6D257154CC2E0530200007F6DAA",
+                                                "psgrType": "ADT", //新增乘机人类型
+                                                "feeType": 2,//1-客票价, 2-机建, 3-燃油, 4-延误险, 5-意外险
+                                                "feeValue": 100,
+                                                "currency": "CNY",
+                                                "exchangerate": "1.0",
+                                                "remark": null,
+                                                "feeName": "FCNY",
+                                                "psgrIndex": "P1",
+                                                "segmentIndex": "S2"
+                                            },
+                                            {
+                                                "orderNo": "2017061510000100",
+                                                "segmentId": "51F7B6D257134CC2E0530200007F6DAA",
+                                                "psgrId": "51F7B6D257154CC2E0530200007F6DAA",
+                                                "psgrType": "CHT", //新增乘机人类型
+                                                "feeType": 2,//1-客票价, 2-机建, 3-燃油, 4-延误险, 5-意外险
+                                                "feeValue": 0,
+                                                "currency": "CNY",
+                                                "exchangerate": "1.0",
+                                                "remark": null,
+                                                "feeName": "FCNY",
+                                                "psgrIndex": "P2",
+                                                "segmentIndex": "S2"
+                                            },
+                                            {
+                                                "orderNo": "2017061510000100",
+                                                "segmentId": "51F7B6D257134CC2E0530200007F6DAA",
+                                                "psgrId": "51F7B6D257154CC2E0530200007F6DAA",
+                                                "psgrType": "ADT", //新增乘机人类型
+                                                "feeType": 4,//1-客票价, 2-机建, 3-燃油, 4-延误险, 5-意外险
+                                                "feeValue": 30,
+                                                "currency": "CNY",
+                                                "exchangerate": "1.0",
+                                                "remark": null,
+                                                "feeName": "CN",
+                                                "psgrIndex": "P1",
+                                                "segmentIndex": "S2"
+                                            },
+                                            {
+                                                "orderNo": "2017061510000100",
+                                                "segmentId": "51F7B6D257134CC2E0530200007F6DAA",
+                                                "psgrId": "51F7B6D257154CC2E0530200007F6DAA",
+                                                "psgrType": "CHT", //新增乘机人类型
+                                                "feeType": 4,//1-客票价, 2-机建, 3-燃油, 4-延误险, 5-意外险
+                                                "feeValue": 30,
+                                                "currency": "CNY",
+                                                "exchangerate": "1.0",
+                                                "remark": null,
+                                                "feeName": "CN",
+                                                "psgrIndex": "P2",
+                                                "segmentIndex": "S2"
+                                            },
+                                            {
+                                                "orderNo": "2017061510000100",
+                                                "segmentId": "51F7B6D257134CC2E0530200007F6DAA",
+                                                "psgrId": "51F7B6D257154CC2E0530200007F6DAA",
+                                                "psgrType": "ADT", //新增乘机人类型
+                                                "feeType": 5,//1-客票价, 2-机建, 3-燃油, 4-延误险, 5-意外险
+                                                "feeValue": 20,
+                                                "currency": "CNY",
+                                                "exchangerate": "1.0",
+                                                "remark": null,
+                                                "feeName": "YQ",
+                                                "psgrIndex": "P1",
+                                                "segmentIndex": "S1"
+                                            },
+                                            {
+                                                "orderNo": "2017061510000100",
+                                                "segmentId": "51F7B6D257134CC2E0530200007F6DAA",
+                                                "psgrId": "51F7B6D257154CC2E0530200007F6DAA",
+                                                "psgrType": "CHT", //新增乘机人类型
+                                                "feeType": 5,//1-客票价, 2-机建, 3-燃油, 4-延误险, 5-意外险
+                                                "feeValue": 20,
+                                                "currency": "CNY",
+                                                "exchangerate": "1.0",
+                                                "remark": null,
+                                                "feeName": "YQ",
+                                                "psgrIndex": "P2",
+                                                "segmentIndex": "S2"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        };
+
+        var listInfo = mockData.result;
+        var tpl = $('#J_ListTpl').html(),
+            tpl2 = $('#J_ListTpl2').html(),
+            tpl3 = $('#J_ListTpl3').html(),
+            J_OrderDetail = $('.J_OrderDetail'),
+            J_PriceDetail = $('.J_PriceDetail'),
+            J_Footer = $('.J_Footer');
+
+
+        //遍历人员类别个数
+        var adult = 0,
+            child = 0;
+        try{
+            $.each(listInfo.orderInfoDetailSearchDtoLst.orderProductRelationInfoDtoLst[0].orderTicketInfoDtoLst[0].orderPassengerInfoDto, function (index, item) {
+                if(item.psgrType.toUpperCase() == 'ADT'){
+                    adult ++;
+                } else {
+                    child ++;
+                }
+            })
+        }catch (e){
+            console.error('orderInfoDetailSearch 接口字段错误 ')
+        }
+        var totalTrip = adult + child,
+                totalAdult = 2 * adult,
+                totalChild = 2 * child,
+                totalRt = 2* (adult + child) ;
+
+        //遍历价格,把所有的价格都遍历出来,相同的就不展示了
+        var orgAdultPrice = 0,
+            orgChildPrice =  0,
+            orgAdultMachine = 0,
+            orgAccident = 0,
+            orgDelay = 0;
+
+        var dstAdultPrice = 0,
+            dstChildPrice = 0,
+            dstAdultMachine = 0;
+        var adultMachine  = orgAdultMachine + dstAdultMachine;
+
+        //去程
+        try{
+            $.each(listInfo.orderInfoDetailSearchDtoLst.orderProductRelationInfoDtoLst[0].orderTicketInfoDtoLst[0].orderSegmentInfoDto.orderFeeInfoDto, function (index, item) {
+                if(item.psgrType.toUpperCase() == 'ADT' && item.feeType == '1'){
+                    orgAdultPrice = item.feeValue;
+                }else if(item.psgrType.toUpperCase() == 'CHT' && item.feeType == '1'){
+                    orgChildPrice = item.feeValue;
+                }else if(item.psgrType.toUpperCase() == 'ADT' && item.feeType == '2'){
+                    orgAdultMachine = item.feeValue;
+                }else if(item.feeType == '4'){
+                    orgAccident = item.feeValue;
+                }else if(item.feeType == '5'){
+                    orgDelay = item.feeValue;
+                }
+            })
+        }catch (e){
+            console.error('orderInfoDetailSearch 接口字段错误 ')
+        }
+        //返程
+        try{
+            $.each(listInfo.orderInfoDetailSearchDtoLst.orderProductRelationInfoDtoLst[1].orderTicketInfoDtoLst[0].orderSegmentInfoDto.orderFeeInfoDto, function (index, item) {
+                if(item.psgrType.toUpperCase() == 'ADT' && item.feeType == '1'){
+                    dstAdultPrice = item.feeValue;
+                }else if(item.psgrType.toUpperCase() == 'CHT' && item.feeType == '1'){
+                    dstChildPrice = item.feeValue;
+                }else if(item.psgrType.toUpperCase() == 'ADT' && item.feeType == '2'){
+                    dstAdultMachine = item.feeValue;
+                }
+            })
+        }catch (e){
+            console.error('orderInfoDetailSearch 接口字段错误 ')
+        }
+
+
+        var htmlStr = Juicer(tpl, { listInfo: listInfo, adult: adult, child: child }),
+            htmlStr2 = Juicer(tpl2, { listInfo: listInfo, adult: adult, child: child, totalTrip:totalTrip, totalRt:totalRt, totalAdult:totalAdult, totalChild:totalChild, orgAdultPrice:orgAdultPrice, orgChildPrice:orgChildPrice, orgAdultMachine:orgAdultMachine, orgAccident:orgAccident, orgDelay:orgDelay, dstAdultPrice:dstAdultPrice, dstChildPrice:dstChildPrice, adultMachine:adultMachine}),
+            htmlStr3 = Juicer(tpl3, { listInfo: listInfo, adult: adult, child: child, totalTrip:totalTrip, totalRt:totalRt, totalAdult:totalAdult, totalChild:totalChild, orgAdultPrice:orgAdultPrice, orgChildPrice:orgChildPrice, orgAdultMachine:orgAdultMachine, orgAccident:orgAccident, orgDelay:orgDelay, dstAdultPrice:dstAdultPrice, dstChildPrice:dstChildPrice, adultMachine:adultMachine});
+
+        J_OrderDetail.append(htmlStr);
+        J_Footer.append(htmlStr2);
+        J_PriceDetail.append(htmlStr3);
+
+
+        //判断是否有儿童
+        var J_childNum = $('#J_childNum').html();
+        if(J_childNum == '0'){
+            $('.J_childShow').hide();
+            return ;
+        }
+
+        //获取每个人信息
+        //先获取数组长度
+        //var length = listInfo.orderInfoDetailSearchDtoLst.orderProductRelationInfoDtoLst[0].orderTicketInfoDtoLst[0].orderPassengerInfoDto.length();
+
+//        var arrList = [];
+//
+//        arrList.push({
+//            psgrId: "51F7B6D257154CC2E0530200007F6DAA",
+//            psgrType: "ADT",
+//            psgrIndex: "P1",
+//            psgrName: "test/adtb",
+//            lastName: 'YANG',
+//            firstName: 'YE',
+//            certType: 0,
+//            certNo: "230903198703251111",
+//            etCode: "7312345352291",
+//            penStatus: 1,
+//            orgTicketPrice: "",
+//            dstTicketPrice: "",
+//            orgMachinePrice: "",
+//            dstMachinePrice: "",
+//            accidentPrice:"",
+//            delayPrice:"",
+//            orgServiceCharge: "",
+//            dstServiceCharge: ""
+//        });
+
+
+
+
+        var objClone1 = JSON.parse(Util.locStorage.get('orderId')); //获得订单号
+        var objClone2 = JSON.parse(Util.locStorage.get('userId')); //获得用户ID
+        //todo ajax
+        //
+        // $.ajax({
+        //      type: 'POST',
+        //      url: 'http://11.4.66.30:8080/ws/order/orderInfoDetailSearch',
+        //      data: { orderNo: 'objClone1.orderNo' },
+        //      dataType: 'json',
+        //      context: $('body'),
+        //      success: function(data){
+
+        // todo success
+
+        //      },
+        //      error: function(){
+        // todo error
+        //      }
+        //  })
+
+
+
+        //存入locStorage
+        var localKey = 'airOrderInfo';
+        var Data = {
+//            userId: objClone2.userId, //用户ID
+            orderNo: objClone1.orderNo, //订单号
+            rangeType: $('.order-detail-flight').attr('data-type'), //订单类型
+            orderPrice: $('.order-detail-flight').attr('data-price'), //订单总价
+            //每个乘机人的信息
+            orderPassengerInfo :[
+                {
+                    psgrId: "51F7B6D257154CC2E0530200007F6DAA",
+                    psgrType: "ADT",
+                    psgrIndex: "P1",
+                    psgrName: "test/adtb",
+                    lastName: 'YANG',
+                    firstName: 'YE',
+                    certType: 0,
+                    certNo: "230903198703251111",
+                    etCode: "7312345352291",
+                    penStatus: 1,
+                    orgTicketPrice: "1640",
+                    dstTicketPrice: "1640",
+                    orgMachinePrice: "50",
+                    dstMachinePrice: "50",
+                    accidentPrice:"30",
+                    delayPrice:"20",
+                    orgServiceCharge: "0",
+                    dstServiceCharge: "0"
+                },
+                {
+                    psgrId: "51F7B6D257154CC2E0530200007F6DA2",
+                    psgrType: "CHT",
+                    psgrIndex: "P2",
+                    psgrName: "test/chtb",
+                    lastName: 'ZHAO',
+                    firstName: 'KANG',
+                    certType: 0,
+                    certNo: "230903198703251111",
+                    etCode: "7312345352291",
+                    penStatus: 3,
+                    orgTicketPrice: "880",
+                    dstTicketPrice: "880",
+                    orgMachinePrice: "0",
+                    dstMachinePrice: "0",
+                    accidentPrice:"30",
+                    delayPrice:"20",
+                    orgServiceCharge: "0",
+                    dstServiceCharge: "0"
+                }
+            ]
+        };
+        Util.locStorage.set(localKey, JSON.stringify(Data));
+
+
+        //点击退款
+        $(DOC).delegate('#J_Refund', 'click', function(){
+
+            //如果状态是"出票失败"，先弹窗,再跳转选择退款人页面
+
+            if($('.state').html() == '出票失败'){
+
+                tipMask.show();
+
+            }else{
+                WIN.location.href = '../refund/choosePeople.html';
+            }
+
+        });
+
+
+        //点击申请退票
+        $(DOC).delegate('#J_ApplyRefund', 'click', function(){
+
+            //跳转选择退款人页面
+            WIN.location.href = '../refund/choosePeople.html';
+
+
+        });
+
+        //点击立即支付
+        $(DOC).delegate('#J_Payment', 'click', function(){
+
+            //跳转支付页面
+
+        });
+
+
+
+    });
+</script>
+
+</body>
+</html>

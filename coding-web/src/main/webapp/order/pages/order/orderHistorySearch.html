@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>厦门航空</title>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="aplus-touch" content="1"/>
+    <link rel="stylesheet" href="../../stylesheets/orderList.css"/>
+    <script>(function(a){var d=document.documentElement,c=null;function b(){a.rem=d.getBoundingClientRect().width/20;if(/ZTE U930_TD/.test(navigator.userAgent)){a.rem=a.rem*1.13}d.style.fontSize=a.rem+"px"}b();a.addEventListener("resize",function(){clearTimeout(c);c=setTimeout(b,300)});a.addEventListener("orientationchange",function(){clearTimeout(c);c=setTimeout(b,300)})})(window,undefined);
+    </script>
+    <script src="../../common/zepto.min.js"></script>
+</head>
+<body>
+<div class="nav-bar">
+    <span class="back J_HistoryBack">返回</span>
+    历史订单查询
+</div>
+
+<div class="container">
+    <div class="tab-bar clearfix J_TabBar">
+        <div class="bar-item active"><span>购票日期</span></div>
+        <div class="bar-item"><span>航班日期</span></div>
+    </div>
+    <div class="form-group J_TabContent">
+        <div class="form-item">
+            <form action="" id="J_TicketDate">
+                <div class="form-panel">
+                    <div class="item">
+                        <label>起始日期</label>
+                        <input class="require" type="text" placeholder="请输入起始日期" id="J_DateStart"/>
+                        <span class="arrow-right"></span>
+                    </div>
+                    <div class="item">
+                        <label>结束日期</label>
+                        <input class="require" type="text" placeholder="请输入结束日期" id="J_DateEnd"/>
+                        <span class="arrow-right"></span>
+                    </div>
+                </div>
+                <div class="text-center mt40 mb40">
+                    <a class="btn" href="javascript:;" id="J_TicketDate_Submit">查询</a>
+                </div>
+            </form>
+        </div>
+        <div class="form-item" style="display: none;">
+            <form action="" id="J_FlightDate">
+                <div class="form-panel">
+                    <div class="item">
+                        <label>起始日期</label>
+                        <input class="require" type="text" placeholder="请输入起始日期" id="J_FlightDateStart"/>
+                        <span class="arrow-right"></span>
+                    </div>
+                    <div class="item">
+                        <label>结束日期</label>
+                        <input class="require" type="text" placeholder="请输入结束日期" id="J_FlightDateEnd"/>
+                        <span class="arrow-right"></span>
+                    </div>
+                </div>
+                <div class="text-center mt40 mb40">
+                    <a class="btn" href="javascript:;" id="J_FlightDate_Submit">查询</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script src="../../common/sea.js"></script>
+<script src="../../common/sea-config.js"></script>
+
+<script>
+    seajs.use(['tab', 'loading', 'toast', 'juicer', 'sm', 'common'], function(Tab, Loading, Toast, Juicer, SM, Common) {
+
+        var WIN = window;
+        var DOC = document;
+
+        // var loading = new Loading();
+        // loading.show()
+        // setTimeout(function(){
+        //     loading.hide();
+        // }, 2000)
+
+
+        //tab切换
+        new Tab('.J_TabContent', '.J_TabBar');
+
+        //选择时间
+        var now = new Date();
+        var year = now.getFullYear(),
+            month = now.getMonth() + 1,
+            day = now.getDate();
+
+        month = month > 9 ? month : ('0' + month);
+        day = day > 9 ? day : ('0' + day);
+
+        var initDate = [year, month, day];
+        var initCfg = {
+            value: initDate,
+            title: '请选择时间'
+        };
+
+        $("#J_DateStart").datetimePicker(initCfg);
+        $("#J_DateEnd").datetimePicker(initCfg);
+
+        $("#J_FlightDateStart").datetimePicker(initCfg);
+        $("#J_FlightDateEnd").datetimePicker(initCfg);
+
+
+        var J_DateStart = $('#J_DateStart'),
+            J_DateEnd = $('#J_DateEnd'),
+            J_FlightDateStart = $('#J_FlightDateStart'),
+            J_FlightDateEnd = $('#J_FlightDateEnd');
+
+        //购票日期查询
+        $(DOC).delegate('#J_TicketDate_Submit', 'click', function(){
+
+            //获得用户id
+            //var objClone = JSON.parse(Util.locStorage.get('userId'));
+
+            //todo ajax
+            //
+            // $.ajax({
+            //      type: 'POST',
+            //      url: 'http://11.4.66.30:8080/xmusp-ws/ws/order/orderInfoHistorySearch',
+            //      data: {"userId":"222","startCreateTime":"2016-03-18","endCreateTime":"2017-03-18"},//测试接口
+            //      data: {"userId":"userId.id","startCreateTime":"J_DateStart.val()","endCreateTime":"J_DateEnd.val()"},
+            //      dataType: 'json',
+            //      context: $('body'),
+            //      success: function(data){
+
+            // todo success
+            //      跳转列表页
+            //          WIN.location.href = 'orderList.html?'
+
+            //      },
+            //      error: function(){
+            // todo error
+            //      }
+            //  })
+
+        });
+
+
+
+        //航班日期查询
+        $(DOC).delegate('#J_FlightDate_Submit', 'click', function(){
+
+            //获得用户id
+            //var objClone = JSON.parse(Util.locStorage.get('userId'));
+
+            //todo ajax
+            //
+            // $.ajax({
+            //      type: 'POST',
+            //      url: 'http://11.4.66.30:8080/xmusp-ws/ws/order/orderInfoHistorySearch',
+            //      data: {"userId":"222","startCreateTime":"2016-03-18","endCreateTime":"2017-03-18"},//测试接口
+            //      data: {"userId":"userId.id","startCreateTime":"J_FlightDateStart.val()","endCreateTime":"J_FlightDateEnd.val()"},
+            //      dataType: 'json',
+            //      context: $('body'),
+            //      success: function(data){
+
+            // todo success
+            //      跳转列表页
+            //          WIN.location.href = 'orderList.html?'
+
+            //      },
+            //      error: function(){
+            // todo error
+            //      }
+            //  })
+
+        });
+
+
+
+    });
+</script>
+
+</body>
+</html>

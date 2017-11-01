@@ -1,0 +1,68 @@
+.pad-panel{
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	//height: 300px;
+	background-color: #fff;
+	.title{
+		height: 50px;
+		text-align: center;
+		background-color: #64C5FF;
+		line-height: 50px;
+		font-size: 16px;
+		color: #fff;
+	}
+	.content{
+		background-color: #fff;
+		.rule-mask-con{
+			padding: px(20) px(20) 0 px(20) ;
+			h1{
+				font-size: px(16);
+				color: #1d5f91;
+				font-weight: normal;
+				line-height: 1;
+				margin-bottom: px(10);
+			}
+			p{
+				font-size: px(14);
+				color:#878787;
+				line-height: 1.5;
+				margin-bottom: px(20);
+			}
+		}
+	}
+}
+.tip-panel{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-top: px(-100);
+	margin-left: px(-150);
+	width: px(301);
+	height: px(220);
+	background: #fff;
+	text-align: center;
+	@include border-radius(px(10));
+	overflow: hidden;
+	.title{
+		height: px(46);
+		line-height: px(46);
+		background-color: #DEF5FF;
+		color: #4976A2;
+		font-size: px(13);
+		position: relative;
+	}
+	.tip-content{
+		padding: px(15) 0 px(20);
+		border-bottom: 1px solid #B7D9FE;
+		p{
+			color: #73777f;
+			font-size: px(15);
+			line-height: px(26);
+		}
+	}
+	.btn-mask{
+		margin: px(12) px(15) 0;
+	}
+}

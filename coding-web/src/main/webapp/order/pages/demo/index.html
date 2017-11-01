@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>办理登机</title>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="aplus-touch" content="1"/>
+    <link rel="stylesheet" href="../../stylesheets/orderList.css"/>
+    <script>(function(a){var d=document.documentElement,c=null;function b(){a.rem=d.getBoundingClientRect().width/20;if(/ZTE U930_TD/.test(navigator.userAgent)){a.rem=a.rem*1.13}d.style.fontSize=a.rem+"px"}b();a.addEventListener("resize",function(){clearTimeout(c);c=setTimeout(b,300)});a.addEventListener("orientationchange",function(){clearTimeout(c);c=setTimeout(b,300)})})(window,undefined);
+    </script>
+    <script src="../../common/zepto.min.js"></script>
+</head>
+<body>
+<div class="nav-bar">
+    <span class="back J_HistoryBack">返回</span>
+    订单详情
+</div>
+
+<a href="javascript:;" id="J_Btn">点击出现pad</a>
+
+<input type="text" id="J_DatePicker" style="border: 1px solid red">
+<input type="text" id="J_Picker" style="border: 1px solid blue">
+
+<!--<div class="mask-panel">-->
+    <!--<div class="mask-page"></div>-->
+    <!--<div class="pad-panel">-->
+        <!--<div class="title">退改签规则</div>-->
+        <!--<div class="content">-->
+
+
+            <!--<div class="radio-list">-->
+                <!--<div class="radio-item" data-key="key">-->
+                    <!--<span>身份证</span>-->
+                    <!--<i class="radio-icon"></i>-->
+                <!--</div>-->
+                <!--<div class="radio-item active">-->
+                    <!--<span>客票号</span>-->
+                    <!--<i class="radio-icon"></i>-->
+                <!--</div>-->
+                <!--<div class="radio-item">-->
+                    <!--<span>护照</span>-->
+                    <!--<i class="radio-icon"></i>-->
+                <!--</div>-->
+                <!--<div class="radio-item">-->
+                    <!--<span>其他证件</span>-->
+                    <!--<i class="radio-icon"></i>-->
+                <!--</div>-->
+            <!--</div>-->
+
+
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
+
+
+<script src="../../common/sea.js"></script>
+<script src="../../common/sea-config.js"></script>
+
+
+<script>
+    seajs.use(['sm', 'checkboxPad', 'radioPad', 'mask', 'pad', 'util'], function(SM, CheckboxPad, RadioPad, Mask, Pad, Util) {
+
+        var localKey = 'xiamenair.order.info';
+        var demoData = {
+            a: 1,
+            b: {
+                c: [1,2,3]
+            }
+        };
+        Util.locStorage.set(localKey, JSON.stringify(demoData));
+        console.log(JSON.parse(Util.locStorage.get(localKey)), '获取localStorage数据');
+
+
+
+        var radioGroup = new RadioPad({
+            title: '证件类型',
+//            customClass: 'aaa',
+            initIndex: 0,
+            radioList: [
+                {
+                    key: 'idCard',
+                    value: '身份证'
+                },
+                {
+                    key: 'kepiaoCard',
+                    value: '客票号'
+                },
+                {
+                    key: 'huzhaoCard',
+                    value: '护照'
+                },
+                {
+                    key: 'otherCard',
+                    value: '其他证件'
+                }
+            ],
+            onChange: function (e) {
+                console.log(e);
+                radioGroup.hide();
+            }
+        });
+
+        var checkboxGroup = new CheckboxPad({
+            title: '证件类型',
+//            customClass: 'aaa',
+            initIndex: [0,2],
+            checkboxList: [
+                {
+                    key: 'idCard',
+                    value: '身份证'
+                },
+                {
+                    key: 'kepiaoCard',
+                    value: '客票号'
+                },
+                {
+                    key: 'huzhaoCard',
+                    value: '护照'
+                },
+                {
+                    key: 'otherCard',
+                    value: '其他证件'
+                }
+            ],
+            onChange: function (e) {
+                console.log(e);
+
+            }
+        });
+
+        var mask = new Mask({
+            fadeIn: true,
+            content: '<div class="pad-panel"><div class="title">退改签规则</div><div class="content">运价有效期内，起飞前2个小时前 (含) 收取商务舱全价票 (J) 的10%。起飞前2小时后商务舱全价票 (J）的20%，改期需补齐差价。</div></div>',
+            tapMaskCallback: function(){
+                console.log(111);
+                mask.hide();
+            },
+            afterHide: function(){
+                console.log('mask hide');
+            }
+        });
+
+        var pad = new Pad({
+            height: '200px',
+            fadeIn: true,
+            title: '退改签规则',
+            content: '运价有效期内，起飞前2个小时前 (含) 收取商务舱全价票 (J) 的10%。起飞前2小时后商务舱全价票 (J）的20%，改期需补齐差价。',
+            tapMaskCallback: function(){
+                console.log(111);
+                pad.hide();
+            },
+            afterHide: function(){
+                console.log('mask hide');
+            }
+        });
+
+        var J_Btn = $('#J_Btn');
+        J_Btn.on('click', function(){
+            checkboxGroup.show();
+        });
+
+        $("#J_DatePicker").datetimePicker({
+            value: ['1990', '01', '01'],
+            title: '请选择时间'
+        });
+
+        $("#J_Picker").picker({
+            keyBar: true,
+            cssClass: 'picker-columns-spe',
+            title: '乘机人数',
+            cols: [
+                {
+                    textAlign: 'center',
+                    values: [1, 2, 3, 4, 5, 6],
+                    cssClass: 'picker-items-col-normal',
+                    key: '成人'
+                },
+                {
+                    textAlign: 'center',
+                    values: [0, 1, 2, 3, 4, 5, 6],
+                    cssClass: 'picker-items-col-normal',
+                    key: '儿童（2~12岁）'
+                }
+            ],
+            onChange: function (picker, values, displayValues) {
+//                $("#J_Picker").attr('data-value', values);
+//                debugger
+            }
+        });
+
+    });
+</script>
+
+</body>
+</html>

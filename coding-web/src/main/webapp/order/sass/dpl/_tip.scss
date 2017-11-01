@@ -1,0 +1,104 @@
+.loading-mask{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+}
+.loading{
+    width: px(118);
+    height: px(118);
+    background: url("../images/loading.gif") no-repeat center center;
+    background-size: px(118) auto;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: px(-59);
+    margin-top: px(-59);
+    text-indent: -9999px;
+}
+.modal-toast{
+    position: fixed;
+    z-index: 11000;
+    left: 0;
+    top: 30%;
+    text-align: center;
+    -webkit-transform: translate3d(0, 0, 0) scale(1.185);
+    transform: translate3d(0, 0, 0) scale(1.185);
+    -webkit-transition-property: -webkit-transform, opacity;
+    transition-property: transform, opacity;
+    padding: 0 px(90);
+    width: 100%;
+    opacity: 0;
+    p{
+        display: inline-block;
+        padding: px(18) px(38);
+        line-height: 1.226;
+        max-width: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        font-size: px(14);
+    }
+}
+.modal-toast.modal-in{
+    opacity: 1;
+    -webkit-transition-duration: 400ms;
+    transition-duration: 400ms;
+    -webkit-transform: translate3d(0, 0, 0) scale(1);
+    transform: translate3d(0, 0, 0) scale(1);
+}
+.modal-toast.modal-out {
+    opacity: 0;
+    z-index: 10999;
+    -webkit-transition-duration: 400ms;
+    transition-duration: 400ms;
+    -webkit-transform: translate3d(0, 0, 0) scale(0.815);
+    transform: translate3d(0, 0, 0) scale(0.815);
+}
+.error-tip-panel{
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.9);
+    .error-tip{
+        width: px(460);
+        height: px(430);
+        background: url("../images/tip-bg.png") no-repeat center center;
+        background-size: px(460) auto;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-left: px(-230);
+        margin-top: px(-215);
+    }
+    .tip-logo{
+        height: px(60);
+        background: url("../images/logo.png") no-repeat center center;
+        background-size: px(260) auto;
+    }
+    .tip-content{
+        padding: px(62) px(56) 0;
+        text-align: center;
+        margin-bottom: px(40);
+        h3{
+            font-size: px(16);
+            color: #042f5f;
+            margin-bottom: px(35);
+        }
+        p{
+            color: #73777f;
+            font-size: px(14);
+            line-height: 1.426;
+        }
+    }
+    .btn-poi{
+        position: absolute;
+        width: 100%;
+        bottom: px(72);
+        left: 0;
+    }
+}

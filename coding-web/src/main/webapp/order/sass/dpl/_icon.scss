@@ -1,0 +1,124 @@
+.icon{
+    display: inline-block;
+    width: px(20);
+    height: px(8);
+    background: url(../images/icon/icon.png) center top no-repeat;
+    background-size: cover;
+}
+
+.one-way-icon{
+    display: block;
+    width: px(39);
+    height: px(14);
+    margin: px(6) 0;
+    background: url(../images/icon/one-way-icon.png) left top no-repeat;
+    background-size: cover;
+}
+
+.round-trip-icon{
+    display: block;
+    width: px(39);
+    height: px(14);
+    margin: px(6) 0;
+    background: url(../images/icon/round-trip-icon.png) left top no-repeat;
+    background-size: cover;
+}
+
+.flight-model-787icon{
+    display: inline-block;
+    width: px(64);
+    height: px(14);
+    margin: px(8) 0;
+    background: url(../images/icon/flight-model-787icon.png) left top no-repeat;
+    background-size: contain;
+}
+
+.flight-food-dinner-icon{  
+    display: inline-block;
+    width: px(44);
+    height: px(14);
+    margin: px(8) 0 px(8) px(10);
+    background: url(../images/icon/flight-food-dinner-icon.png) left top no-repeat;
+    background-size: contain;
+}
+.flight-food-snack-icon{
+    display: inline-block;
+    width: px(44);
+    height: px(14);
+    margin: px(8) 0 px(8) px(10);
+    background: url(../images/icon/flight-food-snack-icon.png) left top no-repeat;
+    background-size: contain;
+}
+.flight-food-no{
+    display: inline-block;
+    color: #fff;
+    width: px(44);
+    height: px(14);
+    margin: px(8) 0 px(8) px(10);
+    background: url(../images/icon/flight-food-no-icon.png) left top no-repeat;
+    background-size: contain;
+}
+
+.btn-shipping-space{
+    position: relative;
+    top: px(-7);
+    display: inline-block;
+    width: px(31);
+    height: px(15);
+    line-height: px(15);
+    @include border-radius(px(10));
+    outline: 0;
+    font-size: px(10);
+    text-align: center;
+    background-color: #fec679;
+    color: #fff;
+    border: 0;
+}
+
+
+.rectangle-down{
+    display: inline-block;
+    float: right;
+    position: relative;
+    top: px(22);
+    width: px(14);
+    height: px(9);
+    vertical-align: middle;
+    background: url(../images/rectangle-down.png) no-repeat center center;
+    background-size: px(14) auto;
+}
+.rectangle-blue-down{
+    display: inline-block;
+    float: right;
+    position: relative;
+    top: px(13);
+    left: px(7);
+    width: px(28);
+    height: px(18);
+    vertical-align: middle;
+    background: url(../images/rectangle-blue-down.png) no-repeat center center;
+    background-size: px(14) auto;
+}
+
+.rectangle-down-little{
+    display: inline-block;
+    float: right;
+    position: relative;
+    top: px(20);
+    width: px(18);
+    height: px(8);
+    margin: 0 px(3);
+    vertical-align: middle;
+    background: url(../images/rectangle-down.png) no-repeat center center;
+    background-size: px(11) auto;
+}
+
+.arrow-right{
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: px(60);
+    height: px(60);
+    background: url(../images/icon/arrow-right-icon.png) no-repeat center;
+    background-size: px(8) auto;
+}
