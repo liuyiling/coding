@@ -6,11 +6,21 @@ import java.util.concurrent.*;
  * Created by liuyl on 15/12/9.
  * 使用Callable和Future执行异步处理并获取结果
  */
-public class CallableAndFuture {
+public class FutureTaskUseDemo {
 
     public static void main(String[] agrs) throws InterruptedException, ExecutionException {
 
         ExecutorService executor = Executors.newCachedThreadPool();
+
+        /**
+         * 使用FutureTask的Runnable特性
+         */
+        Thread thread = new Thread(new FutureTask<>(new BoilWater()));
+        thread.start();
+
+        /**
+         * 使用FutureTask的Callable特性------第一种写法
+         */
         FutureTask futureTask = new FutureTask(new BoilWater());
         executor.submit(futureTask);
 
@@ -27,7 +37,7 @@ public class CallableAndFuture {
 
 
         /**
-         * 第二种方式
+         * 使用FutureTask的Callable特性------第二种写法
          */
         Future<String> submit = executor.submit(new BoilWater());
 
