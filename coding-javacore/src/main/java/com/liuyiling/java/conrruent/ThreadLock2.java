@@ -10,21 +10,9 @@ public class ThreadLock2 {
     private ReentrantLock lock = new ReentrantLock();
 
     public static void main(String[] args) {
-        //输出当前线程的名字
-        System.out.println(Thread.currentThread());
         ThreadLock2 mt = new ThreadLock2();
-        new Thread() {
-            @Override
-            public void run() {
-                mt.insert(Thread.currentThread());
-            }
-        }.start();
-        new Thread() {
-            @Override
-            public void run() {
-                mt.insert(Thread.currentThread());
-            }
-        }.start();
+        new Thread(() -> mt.insert(Thread.currentThread())).start();
+        new Thread(() -> mt.insert(Thread.currentThread())).start();
     }
 
     public void insert(Thread thread) {

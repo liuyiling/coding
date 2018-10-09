@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.Random;
 
 /**
+ * 输出随机数图片
  * Created by liuyl on 2017/4/18.
  */
 public class RandomImageServlet extends HttpServlet {

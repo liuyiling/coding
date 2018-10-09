@@ -13,7 +13,6 @@ public class ThreadInterrput {
         try {
             Thread.currentThread().sleep(2000);
         } catch (InterruptedException e) {
-            e.printStackTrace();
         }
         tt.interrupt();
     }

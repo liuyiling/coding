@@ -30,23 +30,21 @@ public class ForwardServlet extends HttpServlet {
                 req.getRequestDispatcher("/WEB-INF/forward.html").forward(req, resp);
                 break;
             case "servlet":
-                req.getRequestDispatcher("/servlet/servlet.LifeCycleServlet").forward(req, resp);
+                req.getRequestDispatcher("/servlet/LifeCycleServlet").forward(req, resp);
                 break;
             case "resp-redirect":
                 String contextPath = req.getContextPath();
-                resp.sendRedirect(contextPath + "/servlet/servlet.LifeCycleServlet");
+                resp.sendRedirect(contextPath + "/servlet/LifeCycleServlet");
                 break;
             case "resp-302":
-                resp.setHeader("Location", "/servlet/servlet.LifeCycleServlet");
+                resp.setHeader("Location", "/servlet/LifeCycleServlet");
                 resp.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
                 break;
             default:
                 PrintWriter out = resp.getWriter();
-
                 out.println("<html>");
                 out.println("This is forward Servlet");
                 out.println("</html>");
-
                 out.flush();
                 out.close();
         }

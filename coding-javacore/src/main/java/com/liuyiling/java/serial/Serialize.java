@@ -1,4 +1,4 @@
-package com.liuyiling.java.Serial;
+package com.liuyiling.java.serial;
 
 import java.io.*;
 

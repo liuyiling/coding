@@ -21,8 +21,6 @@ public class RequestDispatcherServlet extends HttpServlet {
 
         //转发的两种方式
         this.getServletContext().getRequestDispatcher("/WEB-INF/invisibleHtml.html").forward(req, resp);
-        req.getRequestDispatcher("/WEB-INF/invisibleHtml.html").forward(req,resp);
-        return;
-
+//        req.getRequestDispatcher("/WEB-INF/invisibleHtml.html").forward(req,resp);
     }
 }

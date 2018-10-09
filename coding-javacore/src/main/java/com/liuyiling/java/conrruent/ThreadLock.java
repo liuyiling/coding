@@ -11,32 +11,18 @@ public class ThreadLock {
 
     public static void main(String[] args) {
         ThreadLock mt = new ThreadLock();
-        new Thread(){
-            @Override
-            public void run() {
-                mt.insert(Thread.currentThread());
-            }
-        }.start();
-        new Thread(){
-            @Override
-            public void run() {
-                mt.insert(Thread.currentThread());
-            }
-        }.start();
+        new Thread(() -> mt.insert()).start();
+        new Thread(() -> mt.insert()).start();
     }
 
-    public void insert(Thread thread){
-        //获得锁
+    public void insert() {
         lock.lock();
         try {
-            System.out.println(Thread.currentThread().getName()+"获得锁");
+            System.out.println(Thread.currentThread().getName() + "获得锁");
         } catch (Exception e) {
-
-        //一定要在这边释放锁
-        }finally {
-            System.out.println(Thread.currentThread().getName()+"释放锁");
+        } finally {
+            System.out.println(Thread.currentThread().getName() + "释放锁");
             lock.unlock();
         }
     }
-
 }

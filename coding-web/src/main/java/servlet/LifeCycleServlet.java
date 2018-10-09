@@ -14,7 +14,7 @@ import java.io.PrintWriter;
  */
 public class LifeCycleServlet extends HttpServlet {
 
-    private  static double startPoint = 0;
+    private static double startPoint = 0;
 
     /**
      * 尽量不要在Servlet中声明成员变量，否则会引来安全性问题
@@ -31,6 +31,7 @@ public class LifeCycleServlet extends HttpServlet {
 
     /**
      * 所有的请求都会先经过service方法,然后才会分配到具体的doGet或者doPost方法
+     *
      * @param req
      * @param resp
      * @throws ServletException

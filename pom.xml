@@ -33,6 +33,7 @@
         <module>coding-cas</module>
         <module>coding-augular</module>
         <module>coding-springboot</module>
+        <module>coding-cplex</module>
     </modules>
 
     <!-- maven中默认的版本配置-->

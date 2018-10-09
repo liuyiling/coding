@@ -8,43 +8,35 @@
     <!-- 注入资源的配置,在Servlet中可以使用@Resource注入 -->
     <!-- 注意和普通的servlet参数或者全局参数进行区别-->
     <env-entry>
-        <env-entry-name>injectPrama</env-entry-name>
+        <env-entry-name>injectParam</env-entry-name>
         <env-entry-type>java.lang.String</env-entry-type>
-        <env-entry-value>injectPrama</env-entry-value>
+        <env-entry-value>injectParam</env-entry-value>
     </env-entry>
 
     <!-- Listener 声明在 Servlet前面-->
     <listener>
-        <listener-class>listener.MyListener</listener-class>
+        <listener-class>listener.ServletContextListenerDemo</listener-class>
+    </listener>
+    <listener>
+        <listener-class>listener.ServletRequestListenerDemo</listener-class>
     </listener>
 
     <!-- 第一个servlet，用来上手和熟悉servlet的运行流程 -->
     <servlet>
-        <servlet-name>FirstServlet</servlet-name>
-        <servlet-class>servlet.FirstServlet</servlet-class>
+        <servlet-name>HtmlAndImageServlet</servlet-name>
+        <servlet-class>servlet.HtmlAndImageServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>FirstServlet</servlet-name>
-        <url-pattern>/servlet/servlet.FirstServlet</url-pattern>
-    </servlet-mapping>
-
-
-    <servlet>
-        <servlet-name>DyGraphServlet</servlet-name>
-        <servlet-class>servlet.AdapterBridgeServlet</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>DyGraphServlet</servlet-name>
-        <url-pattern>/servlet/servlet.AdapterBridgeServlet</url-pattern>
+        <servlet-name>HtmlAndImageServlet</servlet-name>
+        <url-pattern>/servlet/HtmlAndImageServlet</url-pattern>
     </servlet-mapping>
 
 
     <!-- 全局参数配置,使用  getConfig().getContext().getInitParam(key)  获取 -->
     <context-param>
-        <param-name>overallinitParam</param-name>
-        <param-value>overallinitParam</param-value>
+        <param-name>overall-initParam</param-name>
+        <param-value>overall-initParam</param-value>
     </context-param>
 
     <!-- sevlet获取参数的配置，还需要配合servlet.java 和 servlet-mapping-->
@@ -108,17 +100,6 @@
         <url-pattern>/servlet/ForwardServlet</url-pattern>
     </servlet-mapping>
 
-
-    <servlet>
-        <servlet-name>RedirectServlet</servlet-name>
-        <servlet-class>servlet.RedirectServlet</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>RedirectServlet</servlet-name>
-        <url-pattern>/servlet/RedirectServlet</url-pattern>
-    </servlet-mapping>
-
     <servlet>
         <servlet-name>RandomImageServlet</servlet-name>
         <servlet-class>servlet.RandomImageServlet</servlet-class>
@@ -127,16 +108,6 @@
     <servlet-mapping>
         <servlet-name>RandomImageServlet</servlet-name>
         <url-pattern>/servlet/RandomImageServlet</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>CheckServlet</servlet-name>
-        <servlet-class>servlet.CheckServlet</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>CheckServlet</servlet-name>
-        <url-pattern>/servlet/CheckServlet</url-pattern>
     </servlet-mapping>
 
 

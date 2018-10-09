@@ -44,6 +44,7 @@
     System.out.println("jsp脚本运行");
 
 
+
 //    return
 //    注意使用return语句，在return之后的代码，包括html都不进行输出
 
@@ -53,6 +54,9 @@
 <html>
 <head>
     <title></title>
+    <div>
+        <%@ include file="head.jsp"%>
+    </div>
 </head>
 <body>
 第一个使用IDEA构建的maven-web

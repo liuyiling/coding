@@ -70,11 +70,6 @@ public class ConcurrentModificationExceptionTest {
         }
 
     }
-
-
-
-
-
 }
 
 class User{

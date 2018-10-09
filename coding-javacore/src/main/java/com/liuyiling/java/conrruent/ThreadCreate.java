@@ -11,7 +11,7 @@ public class ThreadCreate {
         /**
          * 第一种创建线程的方式
          */
-        Thread firstMethod2CreateThread = new Thread(new Runnable(){
+        Thread firstMethod2CreateThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 System.out.println("子线程ID:" + Thread.currentThread().getId());
@@ -22,7 +22,7 @@ public class ThreadCreate {
         /**
          * 第二种创建线程的方式
          */
-        class SecondMethod2CreateThread extends Thread{
+        class SecondMethod2CreateThread extends Thread {
             @Override
             public void run() {
                 System.out.println("子线程ID:" + Thread.currentThread().getId());
@@ -30,6 +30,5 @@ public class ThreadCreate {
         }
         SecondMethod2CreateThread secondMethod2CreateThread = new SecondMethod2CreateThread();
         secondMethod2CreateThread.start();
-
     }
 }

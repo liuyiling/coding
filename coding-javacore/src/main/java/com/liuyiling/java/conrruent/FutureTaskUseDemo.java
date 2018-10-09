@@ -2,9 +2,12 @@ package com.liuyiling.java.conrruent;
 
 import java.util.concurrent.*;
 
+import static java.lang.System.out;
+
 /**
- * Created by liuyl on 15/12/9.
  * 使用Callable和Future执行异步处理并获取结果
+ *
+ * @author liuyiling
  */
 public class FutureTaskUseDemo {
 
@@ -24,16 +27,16 @@ public class FutureTaskUseDemo {
         FutureTask futureTask = new FutureTask(new BoilWater());
         executor.submit(futureTask);
 
-        System.out.println("做饭");
+        out.println("做饭");
         Thread.sleep(2000);
-        System.out.println("饭做好了");
+        out.println("饭做好了");
 
-        while ( !futureTask.isDone() ) {
-            System.out.println("水还没烧开呢");
+        while (!futureTask.isDone()) {
+            out.println("水还没烧开呢");
             Thread.sleep(1000);
         }
 
-        System.out.println(futureTask.get());
+        out.println(futureTask.get());
 
 
         /**
@@ -41,16 +44,37 @@ public class FutureTaskUseDemo {
          */
         Future<String> submit = executor.submit(new BoilWater());
 
-        System.out.println("做饭");
+        out.println("做饭");
         Thread.sleep(2000);
-        System.out.println("饭做好了");
+        out.println("饭做好了");
 
-        while ( !submit.isDone() ) {
-            System.out.println("水还没烧开呢");
+        while (!submit.isDone()) {
+            out.println("水还没烧开呢");
             Thread.sleep(1000);
         }
 
-        System.out.println(submit.get());
+        out.println(submit.get());
+
+        /**
+         * 多个任务同时并行
+         */
+        CompletionService<Integer> cs = new ExecutorCompletionService<Integer>(executor);
+        for (int i = 0; i < 5; i++) {
+            final int taskId = i;
+            cs.submit(new Callable<Integer>() {
+                @Override
+                public Integer call() throws Exception {
+                    return taskId;
+                }
+            });
+        }
+        for (int i = 0; i < 5; i++) {
+            try {
+                out.println(cs.take().get());
+            } catch (Exception e) {
+
+            }
+        }
     }
 }
 

@@ -9,6 +9,7 @@ import java.io.PrintWriter;
 import java.util.Enumeration;
 
 /**
+ * 详细使用request中的参数
  * Created by liuyl on 2017/4/18.
  */
 public class RequestConfigServlet extends HttpServlet{

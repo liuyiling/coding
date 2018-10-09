@@ -6,23 +6,23 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * Created by liuyl on 15/11/27.
  */
-public class ReadAndWriteLOck {
+public class ReadAndWriteLock {
     private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
     private ArrayList<Integer> list = new ArrayList<>();
 
     public static void main(String[] args) {
-        ReadAndWriteLOck mt = new ReadAndWriteLOck();
+        ReadAndWriteLock readAndWriteLock = new ReadAndWriteLock();
         new Thread(){
             @Override
             public void run() {
-                mt.insert(Thread.currentThread());
+                readAndWriteLock.insert(Thread.currentThread());
             }
         }.start();
 
         new Thread(){
             @Override
             public void run() {
-                mt.insert(Thread.currentThread());
+                readAndWriteLock.insert(Thread.currentThread());
             }
         }.start();
     }
