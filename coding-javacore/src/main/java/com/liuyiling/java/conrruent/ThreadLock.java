@@ -18,7 +18,9 @@ public class ThreadLock {
     public void insert() {
         lock.lock();
         try {
+            //睡眠10s，等待锁的线程此时挂起
             System.out.println(Thread.currentThread().getName() + "获得锁");
+            Thread.currentThread().sleep(10000);
         } catch (Exception e) {
         } finally {
             System.out.println(Thread.currentThread().getName() + "释放锁");

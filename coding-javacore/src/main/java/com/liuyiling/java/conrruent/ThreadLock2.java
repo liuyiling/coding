@@ -16,14 +16,13 @@ public class ThreadLock2 {
     }
 
     public void insert(Thread thread) {
-
         if (lock.tryLock()) {
             try {
                 System.out.println(thread.getName() + "得到了锁");
             } catch (Exception e) {
             } finally {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(10000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -33,7 +32,5 @@ public class ThreadLock2 {
         } else {
             System.out.println(thread.getName() + "获取锁失败");
         }
-
-
     }
 }

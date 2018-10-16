@@ -3,60 +3,50 @@ package com.liuyiling.java.conrruent;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static java.lang.System.out;
+
 /**
  * Created by liuyl on 15/11/27.
  */
 public class ThreadLock3 {
 
-    private Lock lock = new ReentrantLock();
+    private static Lock lock = new ReentrantLock();
 
-    public static void main(String[] args) {
-        ThreadLock3 test = new ThreadLock3();
-        MyThread thread1 = new MyThread(test);
-        MyThread thread2 = new MyThread(test);
+    public static void main(String[] args) throws InterruptedException {
+        MyThread thread1 = new MyThread("1", lock);
+        MyThread thread2 = new MyThread("2", lock);
         thread1.start();
+        Thread.sleep(100);
         thread2.start();
-
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        Thread.sleep(1000);
         thread2.interrupt();
-    }
-
-    public void insert(Thread thread) throws InterruptedException {
-        lock.lockInterruptibly();   //注意，如果需要正确中断等待锁的线程，必须将获取锁放在外面，然后将InterruptedException抛出
-        try {
-            System.out.println(thread.getName() + "得到了锁");
-            long startTime = System.currentTimeMillis();
-            for (; ; ) {
-                if (System.currentTimeMillis() - startTime >= Integer.MAX_VALUE)
-                    break;
-            //   thrad1在这边一直卡住
-            }
-        } finally {
-            System.out.println(Thread.currentThread().getName() + "执行finally");
-            lock.unlock();
-            System.out.println(thread.getName() + "释放了锁");
-        }
     }
 }
 
 class MyThread extends Thread {
-    private ThreadLock3 test = null;
+    private Lock lock = null;
 
-    public MyThread(ThreadLock3 test) {
-        this.test = test;
+    public MyThread(String name, Lock lock) {
+        super(name);
+        this.lock = lock;
     }
 
     @Override
     public void run() {
-
+        //注意，如果需要正确中断等待锁的线程，必须将获取锁放在外面，然后将InterruptedException抛出
         try {
-            test.insert(Thread.currentThread());
+            lock.lockInterruptibly();
+            out.println(this.getName() + "得到了锁");
+            long startTime = System.currentTimeMillis();
+            for (; ; ) {
+                if (System.currentTimeMillis() - startTime >= Integer.MAX_VALUE) {
+                    break;
+                }
+            }
         } catch (InterruptedException e) {
-            System.out.println(Thread.currentThread().getName() + "被中断");
+            out.println(Thread.currentThread().getName() + "被中断");
+        } finally {
+            out.println(Thread.currentThread().getName() + "执行finally");
         }
     }
 }
