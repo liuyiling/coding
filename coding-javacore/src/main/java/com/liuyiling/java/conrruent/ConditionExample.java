@@ -12,31 +12,37 @@ import static java.lang.System.out;
  * @author liuyiling
  * @date on 2018/3/8
  */
-public class ConditionExample implements Runnable {
-
+public class ConditionExample{
     public static ReentrantLock lock = new ReentrantLock();
     public static Condition condition = lock.newCondition();
 
-    @Override
-    public void run() {
-        try {
+    public static void main(String[] args) {
+        new Thread(() -> {
             lock.lock();
-            condition.await();
-            out.println("Thread is going on");
-        } catch (Exception e) {
-            out.println("Thread is interrupt");
-        } finally {
-            lock.unlock();
-        }
-    }
+            out.println("线程1 获得锁");
+            try {
+                out.println("线程1 await");
+                condition.await();
+                out.println("线程1 再次获得锁");
+            } catch (InterruptedException e) {
+            } finally {
+                out.println("线程1 释放锁");
+                lock.unlock();
+            }
 
-    public static void main(String[] args) throws InterruptedException {
-        ConditionExample c1 = new ConditionExample();
-        Thread t1 = new Thread(c1);
-        t1.start();
-        Thread.sleep(1000);
-        lock.lock();
-        condition.signal();
-        lock.unlock();
+        }).start();
+
+        new Thread(() -> {
+            lock.lock();
+            out.println("线程2 获得锁");
+            try {
+                out.println("线程2 notifyAll");
+                condition.signalAll();
+            } finally {
+                out.println("线程2 释放锁");
+                lock.unlock();
+            }
+
+        }).start();
     }
 }

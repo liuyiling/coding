@@ -17,9 +17,7 @@ public class NoUseWaitAndNotify {
      * 并发包
      */
     public static void main(String[] agrs) {
-
         testProducerAndConsumer();
-
     }
 
 

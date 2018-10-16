@@ -89,10 +89,5 @@ public class ThreadPoolAndExecutors {
             String futureResult = future.get();
             out.println(futureResult);
         }
-
-
-
-
-
     }
 }

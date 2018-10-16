@@ -38,7 +38,6 @@ public class FutureTaskUseDemo {
 
         out.println(futureTask.get());
 
-
         /**
          * 使用FutureTask的Callable特性------第二种写法
          */
@@ -61,12 +60,7 @@ public class FutureTaskUseDemo {
         CompletionService<Integer> cs = new ExecutorCompletionService<Integer>(executor);
         for (int i = 0; i < 5; i++) {
             final int taskId = i;
-            cs.submit(new Callable<Integer>() {
-                @Override
-                public Integer call() throws Exception {
-                    return taskId;
-                }
-            });
+            cs.submit(() -> taskId);
         }
         for (int i = 0; i < 5; i++) {
             try {
